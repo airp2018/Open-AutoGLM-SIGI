@@ -26,6 +26,9 @@ class HttpServer(private val service: AutoGLMAccessibilityService, port: Int = 8
                 uri == "/input" && method == Method.POST -> handleInput(session)
                 uri == "/launch" && method == Method.POST -> handleLaunch(session)
                 uri == "/action" && method == Method.POST -> handleAction(session)
+                uri == "/switch_ime" && method == Method.POST -> handleSwitchIme(session)
+                uri == "/restore_ime" && method == Method.POST -> handleRestoreIme()
+                uri == "/adb_broadcast" && method == Method.POST -> handleAdbBroadcast(session)
                 else -> newFixedLengthResponse(
                     Response.Status.NOT_FOUND,
                     "application/json",
@@ -187,5 +190,53 @@ class HttpServer(private val service: AutoGLMAccessibilityService, port: Int = 8
         val map = HashMap<String, String>()
         session.parseBody(map)
         return map["postData"] ?: ""
+    }
+
+    private fun handleSwitchIme(session: IHTTPSession): Response {
+        val body = getRequestBody(session)
+        val json = JSONObject(body)
+        val ime = json.getString("ime")
+        
+        val success = service.switchInputMethod(ime)
+        
+        val response = JSONObject()
+        response.put("success", success)
+        
+        return newFixedLengthResponse(
+            Response.Status.OK,
+            "application/json",
+            response.toString()
+        )
+    }
+
+    private fun handleRestoreIme(): Response {
+        val success = service.restoreInputMethod()
+        
+        val response = JSONObject()
+        response.put("success", success)
+        
+        return newFixedLengthResponse(
+            Response.Status.OK,
+            "application/json",
+            response.toString()
+        )
+    }
+
+    private fun handleAdbBroadcast(session: IHTTPSession): Response {
+        val body = getRequestBody(session)
+        val json = JSONObject(body)
+        val action = json.getString("action")
+        val extras = json.optJSONObject("extras")
+        
+        val success = service.sendAdbBroadcast(action, extras)
+        
+        val response = JSONObject()
+        response.put("success", success)
+        
+        return newFixedLengthResponse(
+            Response.Status.OK,
+            "application/json",
+            response.toString()
+        )
     }
 }

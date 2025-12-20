@@ -15,6 +15,9 @@
     <!-- 查询所有应用权限 (解决 launchApp 失败问题) -->
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
 
+    <!-- 切换输入法权限 (用于 ADB Keyboard 集成) -->
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
+
     <application
         android:name=".AutoGLMApplication"
         android:allowBackup="true"

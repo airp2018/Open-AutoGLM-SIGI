@@ -310,40 +310,186 @@ class AutoGLMAccessibilityService : AccessibilityService() {
 
     /**
      * 执行输入操作
+     * 改进版：优先使用 ACTION_SET_TEXT，失败时使用剪贴板 + ACTION_PASTE
+     * 增强查找：增加通过 hint 和任意 editable 节点的查找
      */
     fun performInput(text: String): Boolean {
+        Log.d(TAG, "🔥🔥🔥 [NEW CODE V2] performInput called with text: '$text' 🔥🔥🔥")
         return try {
             val rootNode = rootInActiveWindow ?: return false
-            val focusedNode = findFocusedEditText(rootNode)
+            var editNode: AccessibilityNodeInfo? = null
             
-            if (focusedNode != null) {
+            // 1️⃣ 优先查找有焦点的可编辑框
+            editNode = findFocusedEditText(rootNode)
+            
+            // 2️⃣ 如果没找到，查找第一个可见的可编辑框 (标准 EditText)
+            if (editNode == null) {
+                Log.d(TAG, "No focused EditText, searching for visible EditText")
+                editNode = findFirstVisibleEditText(rootNode)
+            }
+            
+            // 3️⃣ 🔥 如果还没找到，查找匹配提示语的节点 (针对美团等自定义 View)
+            if (editNode == null) {
+                Log.d(TAG, "No visible EditText, searching by hint text...")
+                editNode = findInputNodeByHint(rootNode)
+            }
+            
+            // 4️⃣ 🔥 最后尝试：任何宣称自己是 Editable 的节点
+            if (editNode == null) {
+                Log.d(TAG, "Still not found, searching for ANY editable node...")
+                editNode = findAnyEditableNode(rootNode)
+            }
+            
+            if (editNode != null) {
+                Log.d(TAG, "🎯 Target node found: class=${editNode.className}, editable=${editNode.isEditable}")
+                
+                // 尝试聚焦
+                if (!editNode.isFocused) {
+                    editNode.performAction(AccessibilityNodeInfo.ACTION_FOCUS)
+                    // 如果在店内搜索，可能需要点击才能激活
+                    val rect = android.graphics.Rect()
+                    editNode.getBoundsInScreen(rect)
+                    performTap((rect.left + rect.right) / 2, (rect.top + rect.bottom) / 2)
+                    Thread.sleep(500)
+                }
+
+                // 3️⃣ 尝试 ACTION_SET_TEXT
                 val arguments = android.os.Bundle()
                 arguments.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, text)
-                val success = focusedNode.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, arguments)
-                focusedNode.recycle()
-                Log.d(TAG, "Input text: $success")
-                success
+                val success = editNode.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, arguments)
+                
+                if (success) {
+                    Log.d(TAG, "✅ Input text '$text' via ACTION_SET_TEXT: success")
+                    editNode.recycle()
+                    return true
+                } else {
+                    Log.w(TAG, "⚠️ ACTION_SET_TEXT failed, trying clipboard paste...")
+                    // 4️⃣ 备选方案：使用剪贴板 + ACTION_PASTE
+                    val pasteSuccess = performInputViaClipboard(text, editNode)
+                    editNode.recycle()
+                    return pasteSuccess
+                }
             } else {
-                Log.w(TAG, "No focused EditText found")
-                false
+                Log.w(TAG, "❌ No input node found via traversal. Trying logic fallback: SYSTEM FOCUS...")
+                
+                // 🔥🔥🔥 终极兜底：直接问系统谁有焦点 🔥🔥🔥
+                // 这能解决遍历树找不到节点，但键盘其实已经弹出的情况
+                val systemFocus = rootNode.findFocus(AccessibilityNodeInfo.FOCUS_INPUT)
+                if (systemFocus != null) {
+                    Log.d(TAG, "⚡ Found SYSTEM FOCUS node: ${systemFocus.className}")
+                    val pasteSuccess = performInputViaClipboard(text, systemFocus)
+                    systemFocus.recycle()
+                    if (pasteSuccess) return true
+                }
+                
+                Log.e(TAG, "💀 Absolute failure: No node found even via system focus.")
+                return false
             }
         } catch (e: Exception) {
             Log.e(TAG, "Failed to perform input", e)
             false
         }
     }
+    
+    /**
+     * 使用剪贴板粘贴输入文本（备选方案）
+     */
+    private fun performInputViaClipboard(text: String, editNode: AccessibilityNodeInfo): Boolean {
+        return try {
+            Log.d(TAG, "📋 Using clipboard paste for: '$text'")
+            
+            // 1. 将文本复制到剪贴板
+            val clipboard = getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+            val clip = android.content.ClipData.newPlainText("autoglm_input", text)
+            clipboard.setPrimaryClip(clip)
+            Log.d(TAG, "✅ Text copied to clipboard")
+            Thread.sleep(200)
+            
+            // 2. 执行粘贴操作
+            val pasteSuccess = editNode.performAction(AccessibilityNodeInfo.ACTION_PASTE)
+            Log.d(TAG, "📋 Clipboard paste result: $pasteSuccess")
+            
+            pasteSuccess
+        } catch (e: Exception) {
+            Log.e(TAG, "❌ Clipboard paste failed", e)
+            false
+        }
+    }
 
     private fun findFocusedEditText(node: AccessibilityNodeInfo): AccessibilityNodeInfo? {
-        if (node.isFocused && node.isEditable) {
+        // 1. 优先：既有焦点又是 EditText
+        if (node.isFocused && (node.isEditable || node.className.contains("EditText", ignoreCase = true))) {
+            return node
+        }
+        
+        // 递归查找
+        for (i in 0 until node.childCount) {
+            val child = node.getChild(i) ?: continue
+            val result = findFocusedEditText(child)
+            if (result != null) return result
+            child.recycle()
+        }
+        
+        return null
+    }
+
+    private fun findFirstVisibleEditText(node: AccessibilityNodeInfo): AccessibilityNodeInfo? {
+        // 2. 次选：可见的 EditText
+        if (node.isVisibleToUser && (node.isEditable || node.className.contains("EditText", ignoreCase = true))) {
             return node
         }
         
         for (i in 0 until node.childCount) {
             val child = node.getChild(i) ?: continue
-            val result = findFocusedEditText(child)
-            if (result != null) {
-                return result
-            }
+            val result = findFirstVisibleEditText(child)
+            if (result != null) return result
+            child.recycle()
+        }
+        
+        return null
+    }
+    
+    /**
+     * 🔥 新增：通过常见提示语查找输入框（针对美团等自定义控件）
+     */
+    private fun findInputNodeByHint(node: AccessibilityNodeInfo): AccessibilityNodeInfo? {
+        val text = node.text?.toString() ?: ""
+        val hintText = node.hintText?.toString() ?: ""
+        val contentDesc = node.contentDescription?.toString() ?: ""
+        
+        // 常见的搜索框提示语
+        val keywords = listOf("请输入", "搜索", "Search", "输入")
+        val allText = "$text $hintText $contentDesc"
+        
+        val isMatch = keywords.any { allText.contains(it) }
+        
+        if (node.isVisibleToUser && isMatch && (node.isClickable || node.isFocusable)) {
+            Log.d(TAG, "🎯 Found potential input by hint: class=${node.className}, text=$allText")
+            return node
+        }
+
+        for (i in 0 until node.childCount) {
+            val child = node.getChild(i) ?: continue
+            val result = findInputNodeByHint(child)
+            if (result != null) return result
+            child.recycle()
+        }
+        
+        return null
+    }
+
+    /**
+     * 🔥 新增：查找任何宣称自己是 Editable 的节点
+     */
+    private fun findAnyEditableNode(node: AccessibilityNodeInfo): AccessibilityNodeInfo? {
+        if (node.isVisibleToUser && node.isEditable) {
+            return node
+        }
+
+        for (i in 0 until node.childCount) {
+            val child = node.getChild(i) ?: continue
+            val result = findAnyEditableNode(child)
+            if (result != null) return result
             child.recycle()
         }
         
@@ -467,5 +613,78 @@ class AutoGLMAccessibilityService : AccessibilityService() {
         
         Log.e(TAG, "All methods failed to launch: $packageName")
         return false
+    }
+
+    // ============ ADB Keyboard 集成 ============
+    
+    private var originalIme: String? = null
+    
+    fun switchInputMethod(ime: String): Boolean {
+        return try {
+            // 保存当前输入法
+            originalIme = android.provider.Settings.Secure.getString(
+                contentResolver,
+                android.provider.Settings.Secure.DEFAULT_INPUT_METHOD
+            )
+            
+            Log.d(TAG, "Current IME: $originalIme, switching to: $ime")
+            
+            // 切换到指定输入法
+            android.provider.Settings.Secure.putString(
+                contentResolver,
+                android.provider.Settings.Secure.DEFAULT_INPUT_METHOD,
+                ime
+            )
+            
+            Log.i(TAG, "Switched to IME: $ime")
+            true
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to switch IME: ${e.message}")
+            false
+        }
+    }
+    
+    fun restoreInputMethod(): Boolean {
+        return try {
+            if (originalIme != null) {
+                android.provider.Settings.Secure.putString(
+                    contentResolver,
+                    android.provider.Settings.Secure.DEFAULT_INPUT_METHOD,
+                    originalIme
+                )
+                Log.i(TAG, "Restored IME: $originalIme")
+                originalIme = null
+                true
+            } else {
+                Log.w(TAG, "No original IME to restore")
+                false
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to restore IME: ${e.message}")
+            false
+        }
+    }
+    
+    fun sendAdbBroadcast(action: String, extras: org.json.JSONObject?): Boolean {
+        return try {
+            val intent = Intent(action)
+            
+            // 添加 extras
+            extras?.let {
+                val keys = it.keys()
+                while (keys.hasNext()) {
+                    val key = keys.next()
+                    val value = it.getString(key)
+                    intent.putExtra(key, value)
+                }
+            }
+            
+            sendBroadcast(intent)
+            Log.i(TAG, "Sent broadcast: $action")
+            true
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to send broadcast: ${e.message}")
+            false
+        }
     }
 }

@@ -6,6 +6,7 @@ import subprocess
 
 # HTTP 服务器地址
 HELPER_URL = "http://localhost:8080"
+LAST_CLICK_POS = (None, None)  # 记录上一次点击的位置，用于夺回焦点
 
 # APP 包名映射
 APP_PACKAGES = {
@@ -165,8 +166,10 @@ def _add_stop_banner(image):
 
 
 
-def click(x, y):
+def tap(x, y):
     """点击屏幕"""
+    global LAST_CLICK_POS
+    LAST_CLICK_POS = (x, y)  # 记录位置
     try:
         response = requests.post(
             f"{HELPER_URL}/tap",
@@ -180,6 +183,9 @@ def click(x, y):
     except Exception as e:
         print(f"点击失败: {e}")
         return False
+
+# 保持兼容性别名
+click = tap
 
 def swipe(x1, y1, x2, y2, duration=500):
     """滑动屏幕"""
@@ -203,9 +209,72 @@ def swipe(x1, y1, x2, y2, duration=500):
         print(f"滑动失败: {e}")
         return False
 
-def input_text(text):
-    """输入文本"""
+def input_text_via_adb_keyboard(text):
+    """使用 ADB Keyboard 输入文本（通过内部 API）"""
+    import base64
+    import time
+    
     try:
+        print(f"🔄 使用 ADB Keyboard 输入: {text}")
+        
+        # 1. 切换到 ADB Keyboard（通过 HTTP 请求 Kotlin 端）
+        response = requests.post(
+            f"{HELPER_URL}/switch_ime",
+            json={'ime': 'com.android.adbkeyboard/.AdbIME'},
+            timeout=3
+        )
+        
+        if response.status_code != 200 or not response.json().get('success'):
+            print(f"❌ 切换输入法失败")
+            return False
+        
+        print(f"✅ 已切换到 ADB Keyboard")
+        time.sleep(2.0)  # 给系统时间绑定
+        
+        # 🟢 关键：如果记录了点击位置，重新点一下夺回焦点
+        if LAST_CLICK_POS[0] is not None:
+            print(f"🎯 正在重新点击位置 {LAST_CLICK_POS} 以夺回焦点...")
+            tap(LAST_CLICK_POS[0], LAST_CLICK_POS[1])
+            time.sleep(0.5)
+            
+        # 2. 清空输入框
+        requests.post(
+            f"{HELPER_URL}/adb_broadcast",
+            json={'action': 'ADB_CLEAR_TEXT'},
+            timeout=3
+        )
+        time.sleep(0.3)
+        
+        # 3. 输入文本（Base64 编码支持中文）
+        encoded_text = base64.b64encode(text.encode('utf-8')).decode('utf-8')
+        requests.post(
+            f"{HELPER_URL}/adb_broadcast",
+            json={
+                'action': 'ADB_INPUT_B64',
+                'extras': {'msg': encoded_text}
+            },
+            timeout=3
+        )
+        print(f"⌨️ 已输入: {text}")
+        time.sleep(0.3)
+        
+        # 4. 恢复原有输入法（通过 HTTP 请求）
+        requests.post(
+            f"{HELPER_URL}/restore_ime",
+            timeout=3
+        )
+        print(f"🔙 已恢复原输入法")
+        
+        return True
+        
+    except Exception as e:
+        print(f"❌ ADB Keyboard 输入失败: {e}")
+        return False
+
+def input_text(text):
+    """输入文本（优先使用 AccessibilityService，失败时使用 ADB Keyboard）"""
+    try:
+        # 1️⃣ 优先尝试 AccessibilityService
         response = requests.post(
             f"{HELPER_URL}/input",
             json={'text': str(text)},
@@ -214,11 +283,23 @@ def input_text(text):
         
         if response.status_code == 200:
             data = response.json()
-            return data.get('success', False)
-        return False
+            success = data.get('success', False)
+            
+            if success:
+                print(f"✅ AccessibilityService 输入成功")
+                return True
+            else:
+                print(f"⚠️ AccessibilityService 输入失败，尝试 ADB Keyboard...")
+                # 2️⃣ 备选方案：使用 ADB Keyboard
+                return input_text_via_adb_keyboard(text)
+        else:
+            print(f"⚠️ HTTP 请求失败，尝试 ADB Keyboard...")
+            return input_text_via_adb_keyboard(text)
+            
     except Exception as e:
-        print(f"输入失败: {e}")
-        return False
+        print(f"⚠️ AccessibilityService 异常: {e}，尝试 ADB Keyboard...")
+        # 3️⃣ 异常时也使用 ADB Keyboard
+        return input_text_via_adb_keyboard(text)
 
 def launch_app(app_name):
     """启动应用 - 通过 HTTP 请求"""
