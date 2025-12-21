@@ -38,6 +38,13 @@ SYSTEM_PROMPT = (
 - finish(message="xxx")
 
 注意：输入文本后通常需要点击键盘上的搜索/回车键(坐标约[950,950])。
+
+【特别规则：美团店内搜索】
+在美团应用内（特别是在店铺内搜索商品时）：
+1. ⚠️ **输入前必须点击**：在执行 `Type` 输入文字之前，**必须**先执行 `Tap` 点击输入框，确保键盘弹出且光标闪烁。这是输入成功的关键！
+2. ✅ **优先点击"热门搜索"**：如果既有热门词又有搜索框，优先点击热门词（效率更高）。
+3. 🔄 **输入失败处理**：如果 `Type` 后没有反应，请尝试再点击一次输入框，或者点击左上角返回。
+
 """
 )
 
@@ -57,6 +64,10 @@ class SimplePhoneAgent:
         self.dynamic_max_steps = 40  # 动态最大步数（可被停止按钮修改）
         self.current_step = 0  # 当前执行到第几步
         self.history = []
+        
+        # 防死循环机制
+        self.recent_actions = []  # 记录最近的动作
+        self.max_repeat_count = 3  # 允许的最大重复次数
         
         # AutoGLM-Phone-9B 使用 1000x1000 归一化坐标系
         self.model_width = 1000
@@ -132,12 +143,48 @@ class SimplePhoneAgent:
         
         return None
     
-    def request_graceful_stop(self, buffer_steps=2):
+    def _check_repeated_action(self, action, log_callback):
+        """
+        检测是否重复执行相同的动作（防死循环）
+        
+        Args:
+            action: 当前要执行的动作
+            log_callback: 日志回调
+            
+        Returns:
+            True 如果检测到重复，False 否则
+        """
+        if not action or action[0] in ['finish', 'wait', 'launch']:
+            # finish/wait/launch 不参与重复检测
+            return False
+        
+        # 将动作转换为字符串用于比较
+        action_str = str(action)
+        
+        # 添加到最近动作列表
+        self.recent_actions.append(action_str)
+        
+        # 只保留最近 10 个动作
+        if len(self.recent_actions) > 10:
+            self.recent_actions.pop(0)
+        
+        # 检查最近的动作是否有重复
+        if len(self.recent_actions) >= self.max_repeat_count:
+            # 检查最后 N 个动作是否完全相同
+            last_n_actions = self.recent_actions[-self.max_repeat_count:]
+            if len(set(last_n_actions)) == 1:
+                log_callback.onLog(f"⚠️ 检测到重复动作 {self.max_repeat_count} 次: {action_str}")
+                log_callback.onLog(f"💡 建议: AI 可能陷入死循环，尝试其他操作或结束任务")
+                return True
+        
+        return False
+    
+    def request_graceful_stop(self, buffer_steps=1):
         """
         请求优雅停止：不立即中断，而是让 AI 再执行 buffer_steps 步后停止
         
         Args:
-            buffer_steps: 缓冲步数，默认 2 步
+            buffer_steps: 缓冲步数，默认 1 步
         """
         old_limit = self.dynamic_max_steps
         self.dynamic_max_steps = self.current_step + buffer_steps
@@ -270,6 +317,24 @@ class SimplePhoneAgent:
                 
                 log_callback.onLog(f"[OK] 动作: {action[0]}")
                 
+                # 🔥 检测重复动作（防死循环）
+                if self._check_repeated_action(action, log_callback):
+                    # 检测到重复，向 AI 注入警告信息
+                    warning_message = (
+                        f"⚠️ 系统检测: 你已经连续 {self.max_repeat_count} 次执行相同的操作 {action}，"
+                        "但页面没有变化。这说明当前操作无效。\n"
+                        "请尝试：\n"
+                        "1. 点击不同的坐标位置（例如列表项的中心或下方）\n"
+                        "2. 使用 Swipe 滑动查看更多内容\n"
+                        "3. 使用 Back 返回重新操作\n"
+                        "4. 如果任务已完成，使用 finish() 结束"
+                    )
+                    self.messages.append({
+                        "role": "user",
+                        "content": [{"type": "text", "text": warning_message}]
+                    })
+                    log_callback.onLog("💡 已向 AI 注入防死循环警告")
+                
                 if action[0] == 'finish':
                     message = action[1] if len(action) > 1 else "任务已完成"
                     log_callback.onLog(f"[OK] {message}")
@@ -348,13 +413,13 @@ def run_task(api_key, base_url, model_name, task, log_callback):
     _current_agent.run(task, log_callback)
     _current_agent = None  # 任务结束后清空
 
-def stop_gracefully(buffer_steps=2):
+def stop_gracefully(buffer_steps=1):
     """
     优雅停止当前任务
     供 Kotlin 调用：android_helper.stop_gracefully()
     
     Args:
-        buffer_steps: 缓冲步数，默认 2
+        buffer_steps: 缓冲步数，默认 1
     
     Returns:
         停止后的最大步数，如果没有正在运行的任务则返回 -1

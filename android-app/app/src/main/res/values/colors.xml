@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ye_wenjie_red">#D50000</color> <!-- 鲜红，象征危机/发射 -->
+    <color name="salvation_green">#00E676</color> <!-- 荧光绿，象征拯救/停止 -->
+    <color name="star_white">#FFFFFF</color>
+    <color name="log_bg_transparent">#B3000000</color> <!-- 半透明黑，70%不透明度 -->
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#B0BEC5</color>
+    <color name="terminal_green">#FF00E676</color>
+    <color name="terminal_green_dark">#FF1B5E20</color>
+</resources>

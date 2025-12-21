@@ -1,170 +1,219 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="24dp"
-    android:background="#0A1929">
+    android:background="#000000">
 
+    <!-- Background Image: Red Coast Base & Starry Sky -->
+    <ImageView
+        android:id="@+id/backgroundImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/bg_red_coast"
+        android:alpha="0.8" />
+
+
+
+    <!-- Main Content Layer -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_marginBottom="24dp">
-        
-        <TextView
+        android:paddingStart="24dp"
+        android:paddingTop="24dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="0dp">
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Sigillum"
-            android:textSize="36sp"
-            android:textStyle="bold"
-            android:letterSpacing="0.05"
-            android:fontFamily="serif"
-            android:textColor="#FFFFFF"
-            android:gravity="center" />
+            android:orientation="vertical"
+            android:layout_marginBottom="24dp">
+            
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Sigillum"
+                android:textSize="28sp"
+                android:textStyle="bold|italic"
+                android:letterSpacing="0.1"
+                android:fontFamily="monospace"
+                android:textColor="@color/terminal_green"
+                android:gravity="center"
+                 /> <!-- Shadow for better visibility on starry bg -->
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Mentis"
-            android:textSize="36sp"
-            android:textStyle="bold|italic"
-            android:letterSpacing="0.05"
-            android:fontFamily="serif"
-            android:textColor="#90CAF9"
-            android:gravity="center"
-            android:layout_marginTop="-8dp" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Mentis"
+                android:textSize="28sp"
+                android:textStyle="bold|italic"
+                android:letterSpacing="0.1"
+                android:fontFamily="monospace"
+                android:textColor="@color/terminal_green"
+                android:gravity="center"
+                android:layout_marginTop="-8dp" />
 
-        <TextView
-            android:id="@+id/statusText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone" />
+            <TextView
+                android:id="@+id/statusText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
 
+        </LinearLayout>
+
+        <!-- Accessibility Settings Link - Just above input -->
         <TextView
             android:id="@+id/openSettingsButton"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:text="检查无障碍权限"
-            android:fontFamily="sans-serif-medium"
-            android:textColor="#00FF00"
-            android:textSize="14sp"
-            android:gravity="center_vertical"
-            android:paddingEnd="16dp"
+            android:layout_height="wrap_content"
+            android:text="打开无障碍权限"
+            android:fontFamily="monospace"
+            android:textColor="@color/terminal_green"
+            android:textSize="12sp"
             android:clickable="true"
             android:focusable="true"
             android:background="?android:attr/selectableItemBackground"
-            android:layout_marginTop="8dp" />
-    </LinearLayout>
+            android:layout_marginBottom="4dp" />
 
-
-
-    <EditText
-        android:id="@+id/taskInput"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/tech_input_border"
-        android:hint="> Task Input (e.g., 12306 ticket booking)..."
-        android:fontFamily="sans-serif"
-        android:textColorHint="#546E7A"
-        android:textColor="#FFFFFF"
-        android:inputType="textMultiLine"
-        android:minLines="3"
-        android:padding="16dp"
-        android:layout_marginBottom="24dp" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="24dp">
-
-        <Button
-            android:id="@+id/executeButton"
-            android:layout_width="0dp"
-            android:layout_height="56dp"
-            android:layout_weight="1"
-            android:layout_marginEnd="12dp"
-            android:text="EXECUTE"
-            android:textSize="14sp"
-            android:fontFamily="sans-serif-black"
-            android:textColor="#FFFFFF"
-            android:background="@drawable/tech_button_bg" />
-
-        <Button
-            android:id="@+id/stopButton"
-            android:layout_width="0dp"
-            android:layout_height="56dp"
-            android:layout_weight="1"
-            android:layout_marginStart="12dp"
-            android:text="ABORT"
-            android:textSize="14sp"
-            android:fontFamily="sans-serif-black"
-            android:textColor="#FFFFFF"
-            android:background="@drawable/tech_button_stop_bg"
-            android:enabled="false" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:layout_marginBottom="8dp">
-
-        <TextView
-            android:id="@+id/logToggle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="▼"
-            android:textSize="16sp"
-            android:textColor="#00FF00"
-            android:padding="8dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="?android:attr/selectableItemBackground" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="SYSTEM LOG"
-            android:letterSpacing="0.05"
-            android:fontFamily="sans-serif-medium"
-            android:textColor="#00FF00" />
-
-        <TextView
-            android:id="@+id/copyLogButton"
-            android:layout_width="wrap_content"
-            android:layout_height="32dp"
-            android:text="COPY"
-            android:gravity="center"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:textColor="#00FF00"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="?android:attr/selectableItemBackground"
-            android:textSize="12sp" />
-    </LinearLayout>
-
-    <ScrollView
-        android:id="@+id/logScroll"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="#1A2332"
-        android:padding="12dp">
-
-        <TextView
-            android:id="@+id/logText"
+        <EditText
+            android:id="@+id/taskInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#E3F2FD"
+            android:background="@drawable/tech_input_border"
+            android:hint="> Imput 'Thought Seal' Command..."
             android:fontFamily="monospace"
-            android:textSize="12sp"
-            android:lineSpacingMultiplier="1.2"
-            android:text=">_ Waiting for command...\n" />
-    </ScrollView>
+            android:textColorHint="@color/terminal_green_dark"
+            android:textColor="@color/terminal_green"
+            android:inputType="textMultiLine"
+            android:minLines="3"
+            android:padding="16dp"
+            android:layout_marginBottom="24dp" />
 
-</LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="24dp">
+
+            <Button
+                android:id="@+id/executeButton"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="12dp"
+                android:text="EXECUTE"
+                android:textSize="14sp"
+                android:fontFamily="sans-serif-black"
+                android:textColor="#FFFFFF"
+                android:background="@drawable/tech_button_bg" />
+
+            <!-- The Red Button (Ye Wenjie's Button) -->
+            <Button
+                android:id="@+id/stopButton"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_weight="1"
+                android:layout_marginStart="12dp"
+                android:text="ABORT"
+                android:textSize="14sp"
+                android:fontFamily="sans-serif-black"
+                android:textColor="#FFFFFF"
+                android:background="@drawable/tech_button_stop_bg"
+                android:enabled="false" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="2dp">
+
+            <TextView
+                android:id="@+id/logToggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="▼"
+                android:textSize="12sp"
+                android:textColor="@color/terminal_green"
+                android:padding="4dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?android:attr/selectableItemBackground" />
+
+            <TextView
+                android:id="@+id/logLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="SYSTEM LOG"
+                android:letterSpacing="0.05"
+                android:fontFamily="monospace"
+                android:textSize="10sp"
+                android:textColor="@color/terminal_green" />
+
+            <TextView
+                android:id="@+id/copyLogButton"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:text="COPY"
+                android:gravity="center"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:textColor="@color/terminal_green"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?android:attr/selectableItemBackground"
+                android:fontFamily="monospace"
+                android:textSize="10sp" />
+        </LinearLayout>
+
+        <!-- Log Area with Rounded Background -->
+        <ScrollView
+            android:id="@+id/logScroll"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_log_bg"
+            android:padding="12dp"
+            android:layout_marginBottom="80dp"
+            android:visibility="visible"> 
+
+            <TextView
+                android:id="@+id/logText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/terminal_green"
+                android:fontFamily="monospace"
+                android:textSize="12sp"
+                android:lineSpacingMultiplier="1.2"
+                android:text=">_ Waiting for signal...\n" />
+        </ScrollView>
+
+    </LinearLayout>
+
+    <!-- Settings Button (Top Right Gear) -->
+    <ImageButton
+        android:id="@+id/settingsButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_settings"
+        android:padding="8dp" />
+
+    <!-- The Sparkling Star - Moved to bottom to render ON TOP -->
+    <ImageView
+        android:id="@+id/sparklingStar"
+        android:layout_width="5dp"  
+        android:layout_height="5dp"
+        android:src="@drawable/star_shape"
+        android:layout_gravity="top|start"
+        android:layout_marginTop="50dp"
+        android:layout_marginStart="40dp"
+        android:alpha="0" />
+
+</FrameLayout>

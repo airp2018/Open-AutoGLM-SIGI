@@ -39,6 +39,11 @@
         </activity>
 
         <!-- 无障碍服务 -->
+        <activity
+            android:name=".SettingsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar" />
+            
         <service
             android:name=".AutoGLMAccessibilityService"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
