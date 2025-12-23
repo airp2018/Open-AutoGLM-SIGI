@@ -30,29 +30,16 @@
             android:orientation="vertical"
             android:layout_marginBottom="24dp">
             
-            <TextView
+            <!-- Pixel Art Title Image (Animated via ClipDrawable) -->
+            <ImageView
+                android:id="@+id/titleImage"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Sigillum"
-                android:textSize="28sp"
-                android:textStyle="bold|italic"
-                android:letterSpacing="0.1"
-                android:fontFamily="monospace"
-                android:textColor="@color/terminal_green"
-                android:gravity="center"
-                 /> <!-- Shadow for better visibility on starry bg -->
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Mentis"
-                android:textSize="28sp"
-                android:textStyle="bold|italic"
-                android:letterSpacing="0.1"
-                android:fontFamily="monospace"
-                android:textColor="@color/terminal_green"
-                android:gravity="center"
-                android:layout_marginTop="-8dp" />
+                android:layout_height="240dp"
+                android:src="@drawable/title_sigillum_pixel"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                android:visibility="visible"
+                android:layout_gravity="center_horizontal" />
 
             <TextView
                 android:id="@+id/statusText"
@@ -68,7 +55,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="打开无障碍权限"
-            android:fontFamily="monospace"
+            android:fontFamily="@font/vt323_regular"
             android:textColor="@color/terminal_green"
             android:textSize="12sp"
             android:clickable="true"
@@ -82,7 +69,8 @@
             android:layout_height="wrap_content"
             android:background="@drawable/tech_input_border"
             android:hint="> Imput 'Thought Seal' Command..."
-            android:fontFamily="monospace"
+            android:fontFamily="@font/vt323_regular"
+            android:textSize="18sp"
             android:textColorHint="@color/terminal_green_dark"
             android:textColor="@color/terminal_green"
             android:inputType="textMultiLine"
@@ -103,8 +91,8 @@
                 android:layout_weight="1"
                 android:layout_marginEnd="12dp"
                 android:text="EXECUTE"
-                android:textSize="14sp"
-                android:fontFamily="sans-serif-black"
+                android:textSize="20sp"
+                android:fontFamily="@font/vt323_regular"
                 android:textColor="#FFFFFF"
                 android:background="@drawable/tech_button_bg" />
 
@@ -116,8 +104,8 @@
                 android:layout_weight="1"
                 android:layout_marginStart="12dp"
                 android:text="ABORT"
-                android:textSize="14sp"
-                android:fontFamily="sans-serif-black"
+                android:textSize="20sp"
+                android:fontFamily="@font/vt323_regular"
                 android:textColor="#FFFFFF"
                 android:background="@drawable/tech_button_stop_bg"
                 android:enabled="false" />
@@ -149,7 +137,7 @@
                 android:layout_weight="1"
                 android:text="SYSTEM LOG"
                 android:letterSpacing="0.05"
-                android:fontFamily="monospace"
+                android:fontFamily="@font/vt323_regular"
                 android:textSize="10sp"
                 android:textColor="@color/terminal_green" />
 
@@ -165,7 +153,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:background="?android:attr/selectableItemBackground"
-                android:fontFamily="monospace"
+                android:fontFamily="@font/vt323_regular"
                 android:textSize="10sp" />
         </LinearLayout>
 
@@ -185,7 +173,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/terminal_green"
-                android:fontFamily="monospace"
+                android:fontFamily="@font/vt323_regular"
                 android:textSize="12sp"
                 android:lineSpacingMultiplier="1.2"
                 android:text=">_ Waiting for signal...\n" />

@@ -26,6 +26,7 @@ class MainActivity : Activity(), LogCallback {
     private lateinit var copyLogButton: TextView
     private lateinit var settingsButton: android.widget.ImageButton // The Gear Icon
     private lateinit var sparklingStar: android.widget.ImageView // The Three Body Star
+    private lateinit var titleImage: android.widget.ImageView // Pixel Art Title
     
     private val handler = Handler(Looper.getMainLooper())
     private var isTaskRunning = false
@@ -49,6 +50,8 @@ class MainActivity : Activity(), LogCallback {
         copyLogButton = findViewById(R.id.copyLogButton)
         sparklingStar = findViewById(R.id.sparklingStar)
         settingsButton = findViewById(R.id.settingsButton)
+        titleImage = findViewById(R.id.titleImage)
+        
         val logLabel = findViewById<TextView>(R.id.logLabel)
         
         // --- FORCE TERMINAL STYLE (Fix for Black Text Issue) ---
@@ -65,12 +68,7 @@ class MainActivity : Activity(), LogCallback {
         taskInput.setTextColor(terminalGreen)
         taskInput.setHintTextColor(terminalGreenDark)
         
-        openSettingsButton.typeface = monoTypeface
-        logToggle.typeface = monoTypeface
-        logLabel.typeface = monoTypeface
-        copyLogButton.typeface = monoTypeface
-        logText.typeface = monoTypeface
-        taskInput.typeface = monoTypeface
+        // Removed manual typeface override to allow XML font (@font/vt323_regular) to work
         // -------------------------------------------------------
         
         // Settings Button Logic
@@ -89,10 +87,15 @@ class MainActivity : Activity(), LogCallback {
         }
         
         stopButton.setOnClickListener {
-            // Only visual change: Button turns Green + Star Blinks
-            triggerSalvationEffect()
+            // Visual Interaction: Turn Green + EXTINGUISH Star
+            stopButton.setBackgroundResource(R.drawable.btn_salvation) // Turn Green
+            stopButton.setTextColor(android.graphics.Color.parseColor("#00E676"))
+            stopButton.text = "SAVED" // 🌍 拯救！
+            stopStarSignal()
             
-            onLog("🛑 正在发送停止信号（视觉 + 逻辑双保险）...")
+            onLog("🛑 CONNECTION SEVERED.")
+            onLog("🌍 YOU SAVED THE WORLD... AGAIN.")
+            
             try {
                 val py = Python.getInstance()
                 
@@ -107,7 +110,6 @@ class MainActivity : Activity(), LogCallback {
                 
                 if (result > 0) {
                     onLog("✅ 已设置保底停止点：第 $result 步")
-                    onLog("💡 AI 识别到红色横幅后会立即停止，否则最多 1 步后停止")
                 } else {
                     onLog("⚠️ 当前没有正在运行的任务")
                 }
@@ -126,14 +128,14 @@ class MainActivity : Activity(), LogCallback {
         }
         
         updateStatus()
+        
+        // 🎬 Start Pixel Title Animation
+        playPixelTitleAnimation()
     }
 
     // Only Animation and Color Change - NO TEXT CHANGE
-    private fun triggerSalvationEffect() {
-        stopButton.isEnabled = false 
-        stopButton.setBackgroundResource(R.drawable.btn_salvation) // Turn Green
-        stopButton.setTextColor(resources.getColor(R.color.salvation_green, null))
-        
+    // Start "Three-Body Star" Blinking Animation (Signal Sent)
+    private fun startStarSignal() {
         // Ensure star is on top
         sparklingStar.bringToFront()
         sparklingStar.visibility = View.VISIBLE
@@ -158,6 +160,14 @@ class MainActivity : Activity(), LogCallback {
                 sparklingStar.startAnimation(blinkAnim)
             }
             .start()
+    }
+
+    // Stop Star Signal (Connection Cut / Task End)
+    private fun stopStarSignal() {
+        sparklingStar.clearAnimation()
+        sparklingStar.animate().alpha(0f).setDuration(500).withEndAction {
+            sparklingStar.visibility = View.INVISIBLE
+        }.start()
     }
 
     private fun copyLogToClipboard() {
@@ -197,15 +207,54 @@ class MainActivity : Activity(), LogCallback {
             if (isTaskRunning) {
                 stopButton.setBackgroundResource(R.drawable.tech_button_stop_bg) // Red background
                 stopButton.setTextColor(android.graphics.Color.WHITE)
+                stopButton.text = "ABORT" // Reset text
                 
                 // Stop Star Animation
                 sparklingStar.clearAnimation()
                 sparklingStar.alpha = 0f
             }
             
+            // Check ADB permission (only once per session)
+            checkAdbPermission()
+            
         } else {
             executeButton.isEnabled = false
             stopButton.isEnabled = false
+        }
+    }
+    
+    private var adbPermissionChecked = false
+    
+    private fun checkAdbPermission() {
+        if (adbPermissionChecked) return
+        adbPermissionChecked = true
+        
+        try {
+            // Try to read a secure setting - if it works, we might have the permission
+            // But the real test is trying to WRITE, which we can't easily test without side effects
+            // Instead, we'll try a harmless write and restore
+            val testKey = "autoglm_permission_test"
+            val originalValue = Settings.Secure.getString(contentResolver, testKey)
+            
+            // Try to write
+            val canWrite = try {
+                Settings.Secure.putString(contentResolver, testKey, "test")
+                // Restore original
+                if (originalValue != null) {
+                    Settings.Secure.putString(contentResolver, testKey, originalValue)
+                }
+                true
+            } catch (e: SecurityException) {
+                false
+            }
+            
+            if (!canWrite) {
+                onLog("⚠️ ADB 权限未授权！请在 PC 上执行:")
+                onLog("adb shell pm grant com.autoglm.helper android.permission.WRITE_SECURE_SETTINGS")
+                Toast.makeText(this, "⚠️ 请先授权 ADB 权限（查看日志）", Toast.LENGTH_LONG).show()
+            }
+        } catch (e: Exception) {
+            // Ignore errors
         }
     }
 
@@ -219,6 +268,7 @@ class MainActivity : Activity(), LogCallback {
         logText.text = ""
         isTaskRunning = true
         updateStatus() // 更新按钮状态
+        startStarSignal() // 🌟 发射信号：三体星开始闪烁
         
         // Read Config from SharedPreferences
         val prefs = getSharedPreferences("AutoGLMConfig", android.content.Context.MODE_PRIVATE)
@@ -237,6 +287,7 @@ class MainActivity : Activity(), LogCallback {
                 
                 runOnUiThread {
                     isTaskRunning = false
+                    stopStarSignal() // 🌟 任务完成：信号切断
                     updateStatus()
                     Toast.makeText(this, "Task completed", Toast.LENGTH_SHORT).show()
                 }
@@ -244,6 +295,7 @@ class MainActivity : Activity(), LogCallback {
                 runOnUiThread {
                     onLog("❌ 运行出错: ${e.message}")
                     isTaskRunning = false
+                    stopStarSignal()
                     updateStatus()
                 }
             }
@@ -257,5 +309,57 @@ class MainActivity : Activity(), LogCallback {
                 logScroll.fullScroll(View.FOCUS_DOWN)
             }
         }
+    }
+
+    private fun playPixelTitleAnimation() {
+        // onLog("✨ Booting System UI...") 
+        
+        val originalDrawable = titleImage.drawable
+        if (originalDrawable == null) {
+            onLog("⚠️ Error: Title Image not loaded")
+            return
+        }
+        
+        // Create ClipDrawable
+        val clipDrawable = android.graphics.drawable.ClipDrawable(
+            originalDrawable, 
+            android.view.Gravity.LEFT, 
+            android.graphics.drawable.ClipDrawable.HORIZONTAL
+        )
+        
+        // 🛑 Force invisible immediately
+        clipDrawable.level = 0
+        titleImage.setImageDrawable(clipDrawable)
+        
+        // Animation params
+        val steps = 20
+        val maxLevel = 10000
+        val stepSize = maxLevel / steps
+        val stepDelay = 80L // Faster speed for smoother look
+        val totalLoops = 2
+        var currentLoop = 0
+        
+        fun animateStep(currentLevel: Int) {
+            if (currentLevel <= maxLevel) {
+                clipDrawable.level = currentLevel
+                titleImage.invalidate() // Force redraw
+                handler.postDelayed({ animateStep(currentLevel + stepSize) }, stepDelay)
+            } else {
+                currentLoop++
+                if (currentLoop < totalLoops) {
+                    handler.postDelayed({
+                        clipDrawable.level = 0
+                        titleImage.invalidate()
+                         handler.postDelayed({ animateStep(stepSize) }, 200)
+                    }, 1000)
+                } else {
+                    clipDrawable.level = 10000
+                    titleImage.invalidate()
+                }
+            }
+        }
+        
+        // Start animation loop
+        handler.postDelayed({ animateStep(stepSize) }, 500)
     }
 }
