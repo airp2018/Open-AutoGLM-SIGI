@@ -45,6 +45,7 @@ SYSTEM_PROMPT = (
 2. ✅ **优先点击"热门搜索"**：如果既有热门词又有搜索框，优先点击热门词（效率更高）。
 3. 🔄 **输入失败处理**：如果 `Type` 后没有反应，请尝试再点击一次输入框，或者点击左上角返回。
 4. 📏 **长屏幕修正**：对于底部弹窗按钮（如"加入购物车"），点击时请自觉将 Y 坐标上移 15%，例如目标在 Y=800，请输出 Y=680。
+5. 🛒 **购物流程**：添加商品到购物车后，**必须关闭弹窗**（点击弹窗外或关闭按钮），然后点击页面底部的**"去结算"按钮**完成购买。不要重复打开商品弹窗！
 
 """
 )
@@ -179,13 +180,9 @@ class SimplePhoneAgent:
             last_n_actions = self.recent_actions[-self.max_repeat_count:]
             if len(set(last_n_actions)) == 1:
                 log_callback.onLog(f"⚠️ 检测到重复动作 {self.max_repeat_count} 次: {action_str}")
-                log_callback.onLog(f"💡 建议: AI 可能陷入死循环，尝试其他操作或结束任务")
+                log_callback.onLog(f"💡 建议: AI 可能陷入死循环，需要改变策略")
                 
-                # 🔥 自动执行返回操作帮助脱困
-                log_callback.onLog(f"🔧 自动执行返回操作，帮助 AI 脱困...")
-                android_helper.go_back()
-                time.sleep(0.5)
-                
+                # 🔥 不再自动执行 go_back()，而是让 AI 自己决定
                 # 清空最近动作历史，给 AI 一个"新开始"
                 self.recent_actions.clear()
                 
@@ -338,11 +335,12 @@ class SimplePhoneAgent:
                         f"⚠️ 系统检测: 你已经连续 {self.max_repeat_count} 次执行相同的操作 {action}，"
                         "但页面没有变化。这说明当前操作无效。\n"
                         "请尝试：\n"
-                        "1. 点击不同的坐标位置（例如列表项的中心或下方）\n"
-                        "2. ⚠️ 如果是点击弹窗按钮无效，尝试大幅降低 Y 坐标（例如 Y-100）\n"
-                        "3. 使用 Swipe 滑动查看更多内容\n"
-                        "4. 使用 Back 返回重新操作\n"
-                        "5. 如果任务已完成，使用 finish() 结束"
+                        "1. 🛒 **如果在美团购物**：商品已添加到购物车后，不要重复打开商品弹窗！应该关闭弹窗，然后点击页面底部的\"去结算\"按钮\n"
+                        "2. 点击不同的坐标位置（例如列表项的中心或下方）\n"
+                        "3. ⚠️ 如果是点击弹窗按钮无效，尝试大幅降低 Y 坐标（例如 Y-100）\n"
+                        "4. 使用 Swipe 滑动查看更多内容\n"
+                        "5. 使用 Back 返回重新操作\n"
+                        "6. 如果任务已完成，使用 finish() 结束"
                     )
                     self.messages.append({
                         "role": "user",
