@@ -14,19 +14,32 @@ APP_PACKAGES = {
     "淘宝": "com.taobao.taobao",
     "京东": "com.jingdong.app.mall",
     "闲鱼": "com.taobao.idlefish",
+    "拼多多": "com.xunmeng.pinduoduo",
     
     # 社交/通讯
     "微信": "com.tencent.mm",
     "QQ": "com.tencent.mobileqq",
     "微博": "com.sina.weibo",
     "小红书": "com.xingin.xhs",
+    "知乎": "com.zhihu.android",
+    
+    # 视频/娱乐
+    "抖音": "com.ss.android.ugc.aweme",
+    "B站": "tv.danmaku.bili",
+    
+    # 音乐
+    "网易云音乐": "com.netease.cloudmusic",
+    "QQ音乐": "com.tencent.qqmusic",
     
     # 生活/出行
     "美团": "com.sankuai.meituan",
     "大众点评": "com.dianping.v1",
     "12306": "com.MobileTicket",
     "高德地图": "com.autonavi.minimap",
+    "百度地图": "com.baidu.BaiduMap",
     "滴滴出行": "com.sdu.didi.psnger",
+    "携程": "ctrip.android.view",
+    "去哪儿": "com.Qunar",
     
     # 支付/金融
     "支付宝": "com.eg.android.AlipayGphone",
