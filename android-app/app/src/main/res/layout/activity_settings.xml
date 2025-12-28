@@ -150,6 +150,25 @@
             android:minHeight="40dp"
             android:layout_marginBottom="24dp"
             android:spinnerMode="dropdown" />
+
+        <!-- Sound Effects Selector -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Audio Feedback System (SFX)"
+            android:textColor="#90A4AE"
+            android:textSize="10sp"
+            android:layout_marginBottom="2dp" />
+
+        <Spinner
+            android:id="@+id/sfxSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/tech_input_border"
+            android:padding="2dp"
+            android:minHeight="40dp"
+            android:layout_marginBottom="24dp"
+            android:spinnerMode="dropdown" />
             
         <!-- Filler Space -->
         <View

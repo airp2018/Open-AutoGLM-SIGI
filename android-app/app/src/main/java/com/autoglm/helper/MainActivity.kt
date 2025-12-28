@@ -38,6 +38,13 @@ class MainActivity : Activity(), LogCallback {
     // Animation Constants
     private val STAR_FADE_DURATION = 2000L
     private val STAR_BLINK_DURATION = 1500L
+    
+    // SoundPool
+    private lateinit var soundPool: android.media.SoundPool
+    private var sfxExecute: Int = 0
+    private var sfxAbort: Int = 0
+    private var sfxComplete: Int = 0
+    private var sfxClick: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,6 +105,7 @@ class MainActivity : Activity(), LogCallback {
         
         // Settings Button Logic
         settingsButton.setOnClickListener {
+            playSfx(sfxClick)
             val intent = Intent(this, SettingsActivity::class.java)
             startActivity(intent)
         }
@@ -117,10 +125,16 @@ class MainActivity : Activity(), LogCallback {
             val saveCount = prefs.getInt("world_save_count", 0)
             
             // Visual Interaction: Turn Green + EXTINGUISH Star
-            stopButton.setBackgroundResource(R.drawable.btn_salvation) // Turn Green
+            stopButton.setBackgroundResource(R.drawable.btn_salvation) // Turn Green Ellipse
             stopButton.setTextColor(android.graphics.Color.WHITE) // 白色文字
             stopButton.text = "SAVED" // 🌍 拯救！
             stopStarSignal()
+            playSfx(sfxAbort) // 🔊 Play ABORT Sound
+            playSfx(sfxComplete) // 🔊 Play Task Complete Feedback
+            
+            // Disable buttons to prevent multi-click during cooldown
+            executeButton.isEnabled = false
+            stopButton.isEnabled = false
             
             onLog("🛑 CONNECTION SEVERED.")
             onLog("🌍 YOU SAVED THE WORLD... AGAIN.")
@@ -149,13 +163,14 @@ class MainActivity : Activity(), LogCallback {
             handler.postDelayed({
                 if (isTaskRunning) {
                     isTaskRunning = false
-                    updateStatus()
+                    resetUI() // FORCE RESET to Initial State
                     onLog("🔄 System reset complete.")
                 }
             }, 2000)
         }
         
         openSettingsButton.setOnClickListener {
+            playSfx(sfxClick)
             val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
             startActivity(intent)
         }
@@ -174,7 +189,10 @@ class MainActivity : Activity(), LogCallback {
         applySkin()
         
         // Doomsday List Logic
-        btnDoomsdayList.setOnClickListener { showDoomsdayListDialog() }
+        btnDoomsdayList.setOnClickListener { 
+            playSfx(sfxClick)
+            showDoomsdayListDialog() 
+        }
         
         btnAddTask.setOnClickListener {
             val task = taskInput.text.toString().trim()
@@ -183,6 +201,22 @@ class MainActivity : Activity(), LogCallback {
                 Toast.makeText(this, "Protocol Encoded into Doomsday Log.", Toast.LENGTH_SHORT).show()
             }
         }
+        
+        // Initialize SoundPool
+        val audioAttributes = android.media.AudioAttributes.Builder()
+            .setUsage(android.media.AudioAttributes.USAGE_GAME)
+            .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION)
+            .build()
+            
+        soundPool = android.media.SoundPool.Builder()
+            .setMaxStreams(2) // Allow overlapping sounds
+            .setAudioAttributes(audioAttributes)
+            .build()
+            
+        sfxExecute = soundPool.load(this, R.raw.sfx_execute, 1)
+        sfxAbort = soundPool.load(this, R.raw.sfx_abort, 1)
+        sfxComplete = soundPool.load(this, R.raw.sfx_complete, 1)
+        sfxClick = soundPool.load(this, R.raw.sfx_click, 1)
     }
     
     // --- Doomsday List Features ---
@@ -236,6 +270,22 @@ class MainActivity : Activity(), LogCallback {
                 dialog.dismiss()
             }
             
+            // Add Long Click to Delete
+            tv.setOnLongClickListener {
+                android.app.AlertDialog.Builder(this)
+                    .setTitle("DELETE PROTOCOL?")
+                    .setMessage(protocol)
+                    .setPositiveButton("DELETE") { _, _ ->
+                        removeDoomsdayList(protocol)
+                        dialog.dismiss()
+                        showDoomsdayListDialog() // Refresh list
+                        Toast.makeText(this, "Protocol Deleted", Toast.LENGTH_SHORT).show()
+                    }
+                    .setNegativeButton("CANCEL", null)
+                    .show()
+                true
+            }
+            
             // Add hover/press effect via background
             val outValue = android.util.TypedValue()
             theme.resolveAttribute(android.R.attr.selectableItemBackground, outValue, true)
@@ -264,6 +314,17 @@ class MainActivity : Activity(), LogCallback {
         
         newSet.add(task)
         prefs.edit().putStringSet("doomsday_list", newSet).apply()
+    }
+    
+    private fun removeDoomsdayList(task: String) {
+        val prefs = getSharedPreferences("AutoGLMConfig", android.content.Context.MODE_PRIVATE)
+        val savedSet = prefs.getStringSet("doomsday_list", null)
+        val newSet = savedSet?.toMutableSet() ?: DEFAULT_PROTOCOLS.toMutableSet()
+
+        if (newSet.contains(task)) {
+            newSet.remove(task)
+            prefs.edit().putStringSet("doomsday_list", newSet).apply()
+        }
     }
 
     // Only Animation and Color Change - NO TEXT CHANGE
@@ -358,22 +419,28 @@ class MainActivity : Activity(), LogCallback {
     }
 
     private fun updateStatus() {
+        // This is called when Task Starts
         val service = AutoGLMAccessibilityService.getInstance()
         if (service != null) {
-            executeButton.isEnabled = !isTaskRunning
             
-            // Only enable Stop button if task is running
-            stopButton.isEnabled = isTaskRunning
-            
-            // Reset Stop Button style if task is running
             if (isTaskRunning) {
-                stopButton.setBackgroundResource(R.drawable.tech_button_stop_bg) // Red background
-                stopButton.setTextColor(android.graphics.Color.WHITE)
-                stopButton.text = "ABORT" // Reset text
+                // RUNNING STATE
+                // Execute -> Dark (Disabled)
+                executeButton.isEnabled = false
+                executeButton.setBackgroundResource(R.drawable.btn_dark) 
+                executeButton.setTextColor(android.graphics.Color.GRAY) // Dim text
                 
-                // Stop Star Animation
-                sparklingStar.clearAnimation()
-                sparklingStar.alpha = 0f
+                // Stop -> Green Rect (Active Abort)
+                stopButton.isEnabled = true
+                stopButton.setBackgroundResource(R.drawable.btn_stop_green)
+                stopButton.setTextColor(android.graphics.Color.WHITE)
+                stopButton.text = "ABORT" 
+                
+                // Stop Star Animation (Already handled in startTask, but good insurance)
+                // sparklingStar.clearAnimation() 
+            } else {
+                // IDLE / RESET STATE
+                resetUI() 
             }
             
             // Check ADB permission (only once per session)
@@ -383,6 +450,29 @@ class MainActivity : Activity(), LogCallback {
             executeButton.isEnabled = false
             stopButton.isEnabled = false
         }
+    }
+    
+    // Strict Reset Logic
+    private fun resetUI() {
+        // EXECUTE -> Back to Red Rect
+        executeButton.isEnabled = true
+        executeButton.setBackgroundResource(R.drawable.btn_execute_red) // Need to define this drawable if not exists, or usage primary red
+        // Assuming btn_execute_bg_red exists or we use raw colour
+        // Let's use standard button bg for enabled state
+        executeButton.background = getDrawable(R.drawable.tech_button_bg) // Revert to original white/standard bg? No, user said RED.
+        // Wait, user said "Execute button initial is RED". 
+        // My previous context said it was White.
+        // User correction: "Execute is RED background".
+        // OK, I will enforce RED background.
+        executeButton.setBackgroundResource(R.drawable.btn_execute_red)
+        executeButton.setTextColor(android.graphics.Color.WHITE)
+        executeButton.text = "EXECUTE"
+        
+        // STOP -> Back to Dark Rect
+        stopButton.isEnabled = false
+        stopButton.setBackgroundResource(R.drawable.btn_dark)
+        stopButton.setTextColor(android.graphics.Color.WHITE)
+        stopButton.text = "ABORT"
     }
     
     private var adbPermissionChecked = false
@@ -426,6 +516,8 @@ class MainActivity : Activity(), LogCallback {
             Toast.makeText(this, "Please input task", Toast.LENGTH_SHORT).show()
             return
         }
+        
+        playSfx(sfxExecute) // 🔊 Play EXECUTE Sound
 
         logText.text = ""
         isTaskRunning = true
@@ -463,7 +555,8 @@ class MainActivity : Activity(), LogCallback {
                 runOnUiThread {
                     isTaskRunning = false
                     stopStarSignal() // 🌟 任务完成：信号切断
-                    updateStatus()
+                    playSfx(sfxComplete) // 🔊 Success Sound
+                    resetUI() // Strict Reset
                     Toast.makeText(this, "Task completed", Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
@@ -471,7 +564,7 @@ class MainActivity : Activity(), LogCallback {
                     onLog("❌ 运行出错: ${e.message}")
                     isTaskRunning = false
                     stopStarSignal()
-                    updateStatus()
+                    resetUI() // Strict Reset
                 }
             }
         }.start()
@@ -536,5 +629,14 @@ class MainActivity : Activity(), LogCallback {
         
         // Start animation loop
         handler.postDelayed({ animateStep(stepSize) }, 500)
+    }
+
+    private fun playSfx(soundId: Int) {
+        val prefs = getSharedPreferences("AutoGLMConfig", android.content.Context.MODE_PRIVATE)
+        val isSfxEnabled = prefs.getBoolean("app_sfx_enabled", true)
+        
+        if (isSfxEnabled && soundId != 0) {
+            soundPool.play(soundId, 1.0f, 1.0f, 1, 0, 1.0f)
+        }
     }
 }

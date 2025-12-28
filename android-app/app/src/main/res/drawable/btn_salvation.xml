@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="oval">
-    <solid android:color="@color/salvation_green" />
-    <stroke android:width="2dp" android:color="#B9F6CA" />
-    <size android:width="120dp" android:height="120dp"/>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="#00E676" /> <!-- Bright Terminal Green -->
+    <corners android:radius="999dp" /> <!-- Fully rounded (Oval/Capsule) -->
+    <stroke android:width="2dp" android:color="#FFFFFF" />
 </shape>

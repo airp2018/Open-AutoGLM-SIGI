@@ -16,6 +16,7 @@ class SettingsActivity : Activity() {
     private lateinit var editApiKey: EditText
     private lateinit var editModelName: EditText
     private lateinit var skinSpinner: android.widget.Spinner
+    private lateinit var sfxSpinner: android.widget.Spinner
     private lateinit var worldSaveCounter: android.widget.TextView
     private lateinit var settingsStar: android.widget.ImageView
 
@@ -39,6 +40,7 @@ class SettingsActivity : Activity() {
         editApiKey = findViewById(R.id.editApiKey)
         editModelName = findViewById(R.id.editModelName)
         skinSpinner = findViewById(R.id.skinSpinner)
+        sfxSpinner = findViewById(R.id.sfxSpinner)
         worldSaveCounter = findViewById(R.id.worldSaveCounter)
         worldSaveCounter = findViewById(R.id.worldSaveCounter)
         settingsStar = findViewById(R.id.settingsStar)
@@ -48,6 +50,7 @@ class SettingsActivity : Activity() {
         setupAutoSave()
         loadSettings()
         setupSkinSpinner()
+        setupSfxSpinner()
         startStarSignal()
 
         // Radio Button Toggle Logic
@@ -143,6 +146,26 @@ class SettingsActivity : Activity() {
     private fun saveSkin(skin: String) {
         val prefs = getSharedPreferences("AutoGLMConfig", Context.MODE_PRIVATE)
         prefs.edit().putString("app_skin", skin).apply()
+    }
+    
+    private fun setupSfxSpinner() {
+        val prefs = getSharedPreferences("AutoGLMConfig", Context.MODE_PRIVATE)
+        val isSfxEnabled = prefs.getBoolean("app_sfx_enabled", true) // Default ON
+        
+        val options = arrayOf("SFX: ON (Active)", "SFX: OFF (Silent)")
+        val adapter = android.widget.ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, options)
+        sfxSpinner.adapter = adapter
+        
+        // Set Selection
+        sfxSpinner.setSelection(if (isSfxEnabled) 0 else 1)
+        
+        sfxSpinner.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: android.widget.AdapterView<*>, view: android.view.View?, position: Int, id: Long) {
+                 val enable = (position == 0)
+                 prefs.edit().putBoolean("app_sfx_enabled", enable).apply()
+            }
+            override fun onNothingSelected(parent: android.widget.AdapterView<*>) {}
+        }
     }
 
     private fun loadSettings() {

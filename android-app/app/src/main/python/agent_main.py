@@ -229,9 +229,9 @@ class SimplePhoneAgent:
         for step in range(self.max_steps):
             self.current_step = step + 1
             
-            # 检查动态停止条件
+            # 🔥 STRICT STOP CHECK: If we exceeded the dynamic limit, stop immediately.
             if self.current_step > self.dynamic_max_steps:
-                log_callback.onLog(f"\n[!] 用户请求停止，已在第 {self.current_step} 步优雅退出")
+                log_callback.onLog(f"\n[!] 用户请求停止，已在第 {self.current_step-1} 步优雅退出")
                 break
             
             # 检查旧的停止标志（保留兼容性）
