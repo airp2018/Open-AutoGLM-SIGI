@@ -9,7 +9,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="> DOOMSDAY PROTOCOLS"
+        android:text="> DOOMSDAY LIST"
         android:fontFamily="@font/vt323_regular"
         android:textColor="#00E676"
         android:textSize="16sp"
@@ -38,7 +38,7 @@
         android:id="@+id/btnCloseList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="CLOSE LOG"
+        android:text="CLOSE LIST"
         android:textColor="#00E676"
         android:textSize="14sp"
         android:fontFamily="@font/vt323_regular"

@@ -198,7 +198,7 @@ class MainActivity : Activity(), LogCallback {
             val task = taskInput.text.toString().trim()
             if (task.isNotEmpty()) {
                 addToDoomsdayList(task)
-                Toast.makeText(this, "Protocol Encoded into Doomsday Log.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Protocol Encoded into Doomsday List.", Toast.LENGTH_SHORT).show()
             }
         }
         
@@ -534,8 +534,8 @@ class MainActivity : Activity(), LogCallback {
             // UNLOCK & AUTO-APPLY
             prefs.edit().putString("app_skin", "red_coast").apply()
             applySkin() // Immediate visual upgrade
-            // onLog("✨ SYSTEM UPGRADE: RED COAST LINK ESTABLISHED ✨") 
-            Toast.makeText(this, "New Skin Unlocked: Red Coast Base", Toast.LENGTH_LONG).show()
+            // onLog("✨ SYSTEM UPGRADE: THE LAST CYBERPHONE LINK ESTABLISHED ✨") 
+            Toast.makeText(this, "New Skin Unlocked: The Last Cyberphone", Toast.LENGTH_LONG).show()
         }
         
         // Read Config from SharedPreferences

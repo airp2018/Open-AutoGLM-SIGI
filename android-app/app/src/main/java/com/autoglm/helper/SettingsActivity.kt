@@ -19,6 +19,9 @@ class SettingsActivity : Activity() {
     private lateinit var sfxSpinner: android.widget.Spinner
     private lateinit var worldSaveCounter: android.widget.TextView
     private lateinit var settingsStar: android.widget.ImageView
+    
+    // Background Music Player
+    private var bgmPlayer: android.media.MediaPlayer? = null
 
     // Default Configurations
     private val ZHIPU_URL = "https://open.bigmodel.cn/api/paas/v4"
@@ -111,9 +114,9 @@ class SettingsActivity : Activity() {
         val isSkinUnlocked = saveCount >= 2
         
         if (isSkinUnlocked) {
-            skins.add("Red Coast Base")
+            skins.add("The Last Cyberphone")
         } else {
-            skins.add("Red Coast Base [LOCKED]")
+            skins.add("The Last Cyberphone [LOCKED]")
         }
         
         val adapter = android.widget.ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, skins)
@@ -128,7 +131,7 @@ class SettingsActivity : Activity() {
         
         skinSpinner.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: android.widget.AdapterView<*>, view: android.view.View?, position: Int, id: Long) {
-                 if (position == 1) { // Red Coast
+                 if (position == 1) { // The Last Cyberphone
                      if (!isSkinUnlocked) {
                          Toast.makeText(this@SettingsActivity, "Save the world 2 times to unlock!", Toast.LENGTH_SHORT).show()
                          skinSpinner.setSelection(0) // Revert
@@ -152,7 +155,7 @@ class SettingsActivity : Activity() {
         val prefs = getSharedPreferences("AutoGLMConfig", Context.MODE_PRIVATE)
         val isSfxEnabled = prefs.getBoolean("app_sfx_enabled", true) // Default ON
         
-        val options = arrayOf("SFX: ON (Active)", "SFX: OFF (Silent)")
+        val options = arrayOf("Cosmic Ripples / ON", "Cosmic Ripples / OFF")
         val adapter = android.widget.ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, options)
         sfxSpinner.adapter = adapter
         
@@ -163,6 +166,25 @@ class SettingsActivity : Activity() {
             override fun onItemSelected(parent: android.widget.AdapterView<*>, view: android.view.View?, position: Int, id: Long) {
                  val enable = (position == 0)
                  prefs.edit().putBoolean("app_sfx_enabled", enable).apply()
+                 
+                 // Immediate effect on BGM
+                 if (enable) {
+                     if (bgmPlayer != null && !bgmPlayer!!.isPlaying) {
+                         bgmPlayer?.start()
+                     } else if (bgmPlayer == null) {
+                         // Initialize if not ready
+                         try {
+                             bgmPlayer = android.media.MediaPlayer.create(this@SettingsActivity, R.raw.bgm_cosmic_ripples)
+                             bgmPlayer?.isLooping = true
+                             bgmPlayer?.setVolume(0.5f, 0.5f)
+                             bgmPlayer?.start()
+                         } catch(e: Exception) {}
+                     }
+                 } else {
+                     if (bgmPlayer != null && bgmPlayer!!.isPlaying) {
+                         bgmPlayer?.pause()
+                     }
+                 }
             }
             override fun onNothingSelected(parent: android.widget.AdapterView<*>) {}
         }
@@ -213,5 +235,39 @@ class SettingsActivity : Activity() {
         blinkAnim.repeatMode = android.view.animation.Animation.REVERSE
         blinkAnim.repeatCount = android.view.animation.Animation.INFINITE
         settingsStar.startAnimation(blinkAnim)
+        settingsStar.startAnimation(blinkAnim)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        
+        val prefs = getSharedPreferences("AutoGLMConfig", Context.MODE_PRIVATE)
+        val isSfxEnabled = prefs.getBoolean("app_sfx_enabled", true)
+        
+        if (isSfxEnabled) {
+            // Start Cosmic Ripples BGM
+            try {
+                if (bgmPlayer == null) {
+                    bgmPlayer = android.media.MediaPlayer.create(this, R.raw.bgm_cosmic_ripples)
+                    bgmPlayer?.isLooping = true
+                    bgmPlayer?.setVolume(0.5f, 0.5f) // Set volume to 50% for ambient feel
+                }
+                bgmPlayer?.start()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        // Pause/Stop BGM
+        bgmPlayer?.pause()
+    }
+    
+    override fun onDestroy() {
+        super.onDestroy()
+        bgmPlayer?.release()
+        bgmPlayer = null
     }
 }
