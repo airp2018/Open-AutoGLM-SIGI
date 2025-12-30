@@ -607,16 +607,37 @@ class MainActivity : Activity(), LogCallback {
             if (key == "1379") {
                 // PERMANENT UNLOCK
                 val prefs = getSharedPreferences("AutoGLMConfig", android.content.Context.MODE_PRIVATE)
+                
+                // Speed Run Check (Easter Egg: 蒸蚌)
+                val lockTime = prefs.getLong("lockdown_start_time", 0L)
+                val currentTime = System.currentTimeMillis()
+                val isSpeedRun = (lockTime > 0) && ((currentTime - lockTime) < 180000) // < 3 mins
+                
                 prefs.edit()
                     .putBoolean("permanent_unlock", true) // The Flag of Freedom
                     .putInt("fatigue_count", 0)
                     .apply()
                 
                 dialog.dismiss()
-                Toast.makeText(this, "SYSTEM ROOTED. LIMITS REMOVED FOREVER.", Toast.LENGTH_LONG).show()
-                playSfx(sfxComplete)
+                
+                if (isSpeedRun) {
+                     // 🥚 Easter Egg: Zheng Bang!
+                     playSfx(sfxComplete)
+                     val toast = Toast.makeText(this, "\n   蒸 蚌 !!!   \n   (Zheng Bang)   \n", Toast.LENGTH_LONG)
+                     val view = toast.view
+                     view?.setBackgroundColor(android.graphics.Color.parseColor("#FFD700")) // Gold
+                     val text = view?.findViewById<TextView>(android.R.id.message)
+                     text?.setTextColor(android.graphics.Color.BLACK)
+                     text?.textSize = 24f
+                     text?.typeface = android.graphics.Typeface.DEFAULT_BOLD
+                     text?.gravity = android.view.Gravity.CENTER
+                     toast.show()
+                } else {
+                    Toast.makeText(this, "高维防御系统已破解，限制永久移除。", Toast.LENGTH_LONG).show()
+                    playSfx(sfxComplete)
+                }
             } else {
-                Toast.makeText(this, "ACCESS DENIED. KEY INVALID.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "访问拒绝，密钥无效。", Toast.LENGTH_SHORT).show()
                 input.setText("")
                 playSfx(sfxAbort)
             }
@@ -639,20 +660,21 @@ class MainActivity : Activity(), LogCallback {
         // 0. Lockdown Check with Auto-Unlock (Limited State)
         var fatigueCount = prefs.getInt("fatigue_count", 0)
         
-        // Threshold restored to 10
-        if (fatigueCount >= 10) {
+        // Threshold set to 7 (More frequent triggers for gameplay)
+        if (fatigueCount >= 7) {
             val lockTime = prefs.getLong("lockdown_start_time", 0L)
             val currentTime = System.currentTimeMillis()
             
-            // 5 minutes = 300,000 ms
-            if (lockTime > 0 && (currentTime - lockTime > 300000)) {
-                // Auto-Unlock (Penalty: Reset count to 3)
-                fatigueCount = 3
+            // 3 minutes = 180,000 ms
+            if (lockTime > 0 && (currentTime - lockTime > 180000)) {
+                // Auto-Unlock (Reset to 0, giving full 7 tries again)
+                fatigueCount = 0
                 prefs.edit()
                     .putInt("fatigue_count", fatigueCount)
                     .putLong("lockdown_start_time", 0L)
                     .apply()
-                Toast.makeText(this, "System Cooled Down. Partial Functionality Restored.", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "质子封锁已解除，您可继续任务。", Toast.LENGTH_SHORT).show()
+                // Proceed execution
             } else {
                 showLockdownDialog()
                 return
@@ -670,7 +692,7 @@ class MainActivity : Activity(), LogCallback {
         val editor = prefs.edit()
         editor.putInt("fatigue_count", newCount)
         
-        if (newCount >= 10) {
+        if (newCount >= 7) {
             // Lock
             editor.putLong("lockdown_start_time", System.currentTimeMillis())
         }

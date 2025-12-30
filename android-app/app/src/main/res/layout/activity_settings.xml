@@ -21,6 +21,16 @@
             android:src="@drawable/settings_bg_trisolaris"
             android:alpha="0.8" />
             
+        <!-- Drag Trigger Area (Transparent) - Moved here to be behind buttons but accessible -->
+        <View
+            android:id="@+id/dragTriggerSettings"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_gravity="top"
+            android:background="#00000000"
+            android:clickable="true"
+            android:focusable="true" />
+
         <ImageButton
             android:id="@+id/btnBack"
             android:layout_width="48dp"
@@ -220,26 +230,18 @@
     
         </LinearLayout>
         
-        <!-- Reveal Handle (Bottom) -->
+        <!-- Reveal Handle (Top) -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="▲"
+            android:text="▼"
             android:textColor="#5500E676"
             android:textSize="18sp"
-            android:layout_gravity="bottom|center_horizontal"
-            android:layout_marginBottom="8dp"
+            android:layout_gravity="top|center_horizontal"
+            android:layout_marginTop="8dp"
             android:alpha="0.6" />
             
-        <!-- Drag Trigger Area (Transparent) -->
-        <View
-            android:id="@+id/dragTriggerSettings"
-            android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:layout_gravity="bottom"
-            android:background="#00000000"
-            android:clickable="true"
-            android:focusable="true" />
+
 
     </FrameLayout>
     

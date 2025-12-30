@@ -244,6 +244,11 @@ class SimplePhoneAgent:
 
             log_callback.onLog(f"\n[#] 步骤 {self.current_step}/{self.dynamic_max_steps}")
             
+            # 🔥 CRITICAL: Double Check Stop Signal BEFORE Heavy Operations (Screenshot)
+            if self.current_step > self.dynamic_max_steps or android_helper.should_stop():
+                log_callback.onLog("\n[STOP] 任务已由用户强制终止 (Pre-Screenshot)")
+                break
+
             # 1. Take screenshot
             image = android_helper.take_screenshot()
             if image is None:

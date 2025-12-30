@@ -94,7 +94,8 @@ class SettingsActivity : Activity() {
         uiContainer.addOnLayoutChangeListener { _, _, top, _, bottom, _, oldTop, _, oldBottom ->
             val height = bottom - top
             if (height > 0 && uiContainer.translationY == 0f) {
-                hiddenWorldBgSettings.translationY = height.toFloat()
+                // Initial position: TOP (Sky) - Hidden above screen
+                hiddenWorldBgSettings.translationY = -height.toFloat()
             }
         }
         
@@ -119,13 +120,15 @@ class SettingsActivity : Activity() {
                          val deltaY = event.rawY - startY
                          val maxDrag = resources.displayMetrics.heightPixels * 0.8f
                          
-                         if (deltaY < 0) {
+                         // PULL DOWN LOGIC (Scanning the Sky)
+                         if (deltaY > 0) {
                              val dampFactor = 0.6f
-                             val targetY = deltaY * dampFactor
+                             val targetY = deltaY * dampFactor // Positive translation
                              
                              if (kotlin.math.abs(targetY) < maxDrag) {
                                 uiContainer.translationY = targetY
-                                hiddenWorldBgSettings.translationY = uiContainer.height.toFloat() + targetY
+                                // Image moves DOWN from TOP (-height)
+                                hiddenWorldBgSettings.translationY = -uiContainer.height.toFloat() + targetY
                              }
                          }
                          return true
@@ -150,13 +153,13 @@ class SettingsActivity : Activity() {
                 .setInterpolator(android.view.animation.OvershootInterpolator(0.8f))
                 .start()
             bg.animate()
-                .translationY(ui.height.toFloat())
+                .translationY(-ui.height.toFloat()) // Reset to TOP
                 .setDuration(400)
                 .setInterpolator(android.view.animation.OvershootInterpolator(0.8f))
                 .start()
         } else {
             ui.translationY = 0f
-            bg.translationY = ui.height.toFloat()
+            bg.translationY = -ui.height.toFloat() // Reset to TOP
         }
     }
     

@@ -9,7 +9,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="⚠ SYSTEM LOCKDOWN ⚠"
+        android:text="⚠ 质子封锁 ⚠"
         android:textColor="#FF5252"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -20,7 +20,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Cognitive limits exceeded.\nYou are trapped in Cyberspace."
+        android:text="思维负载已超限。\n您目前被困在虚拟赛博空间。"
         android:textColor="#FFFFFF"
         android:textSize="14sp"
         android:fontFamily="monospace"
@@ -30,7 +30,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Find the KEY in the distorted memories to escape."
+        android:text="请在破碎的数字幻觉中寻找密钥。"
         android:textColor="#00E676"
         android:textSize="12sp"
         android:fontFamily="monospace"
@@ -56,7 +56,7 @@
         android:id="@+id/btnUnlock"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:text="DECRYPT &amp; RESUME"
+        android:text="解密 // 重启"
         android:textColor="#000000"
         android:backgroundTint="#FF5252"
         android:textStyle="bold" />
@@ -64,7 +64,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="System auto-reset: 5m cooldown"
+        android:text="在高维空间崩塌前（3分钟内）解锁，将获得奖励。"
         android:textColor="#55FFFFFF"
         android:textSize="10sp"
         android:fontFamily="monospace"
