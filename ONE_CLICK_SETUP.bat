@@ -36,7 +36,7 @@ if exist "ADBKeyboard.apk" (
         echo [OK] ADB Keyboard installed.
         echo [*] Enabling ADB Keyboard...
         adb shell ime enable com.android.adbkeyboard/.AdbIME
-        adb shell ime set com.android.adbkeyboard/.AdbIME
+        echo     (Note: You can manually switch to ADB Keyboard in settings if needed)
     )
 ) else (
     echo.
