@@ -63,6 +63,6 @@ echo.
 echo ==========================================================
 echo  DONE!
 echo.
-echo  MANUAL STEP: Settings - Accessibility - SIGI - Enable
+echo  MANUAL STEP: Settings > Accessibility > Downloaded Apps > SIGI > Enable
 echo ==========================================================
 pause

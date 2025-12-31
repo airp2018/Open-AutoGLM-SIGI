@@ -101,11 +101,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/tech_input_border"
-                android:textColor="#FFFFFF"
+                android:textColor="#CCCCCC"
                 android:padding="10dp"
                 android:text="https://open.bigmodel.cn/api/paas/v4/"
                 android:textSize="12sp"
                 android:singleLine="true"
+                android:focusable="false"
+                android:longClickable="false"
+                android:cursorVisible="false"
+                android:inputType="none"
                 android:layout_marginBottom="12dp" />
     
             <!-- API Key -->
