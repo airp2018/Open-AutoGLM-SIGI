@@ -73,7 +73,29 @@ We refactored the open-source Open-AutoGLM with a **"Dimensional Strike"** level
 | **No PC Required** | ❌ Must connect to PC for configuration | ✅ **Runs completely without a PC** |
 | **Experience** | 📟 Dry command line | 🎮 **Immersive Cyberpunk gaming experience** |
 
-### 05. The Creator
+### 05. Technical Architecture
+
+#### Directory Structure
+```bash
+Open-AutoGLM-SIGI/
+├── android-app/           # Android Host Project (Kotlin)
+│   ├── app/src/main/python/   # 🟢 Python Agent Core
+│   │   ├── agent_main.py      # Entry Point
+│   │   └── android_helper.py  # Bridge Layer
+│   └── app/src/main/java/     # 🟡 Android Native Layer
+│       ├── AutoGLMAccessibilityService.kt # Perception & Action
+│       └── MainActivity.kt    # UI Container
+├── SIGI_Deployment_Kit/   # 🟣 Deployment Kit
+└── docs/                  # Documentation
+```
+
+#### Hybrid Architecture Logic
+SIGI uses a **Single-Process Hybrid Architecture**, embedding the Python VM directly into the Android Runtime via Chaquopy.
+1.  **The Brain**: Python layer runs the AutoGLM Agent logic.
+2.  **The Body**: Android native layer handles Screenshots and Accessibility Actions.
+3.  **The Nerve**: Zero-latency JNI communication between layers.
+
+### 06. The Creator
 
 **SIGI is created by Yanqiao ([Weibo @颜桥](https://weibo.com/n/颜桥)).**
 
@@ -86,7 +108,7 @@ I am not a traditional "coder"; I am a **Storyteller** and **Creative Strategist
 
 > **"In the AI era, technology is no longer a barrier. Creative minds, empowered by Vibe Coding, will transform fresh ideas into tangible products. We light up your product with creative details."**
 
-### 06. Install & Join
+### 07. Install & Join
 
 1.  Download **[SIGI_Deployment_Kit.zip](https://github.com/airp2018/Open-AutoGLM-SIGI/releases)** from Releases.
 2.  Unzip it on your PC.
