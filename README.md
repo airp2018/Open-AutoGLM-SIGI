@@ -84,8 +84,9 @@ SIGI 的灵感源自 **《三体》 (The Three-Body Problem)** 与 **古典赛�
 
 ### 06. 安装与加入
 
-1.  下载 **SIGI 部署包**。
-2.  运行 `一键安装.bat` (仅第一次需要)。
+1.  在 **[Releases](https://github.com/airp2018/Open-AutoGLM-SIGI/releases)** 下载 **SIGI_Deployment_Kit.zip** (一键安装包)。
+2.  解压到电脑。
+3.  运行 `Install_Windows.bat` (第一次使用需要)。
 3.  **拔线，起飞。**
 
 ---
@@ -160,6 +161,7 @@ I am not a traditional "coder"; I am a **Storyteller** and **Creative Strategist
 
 ### 06. Install & Join
 
-1.  Download the **SIGI Deployment Pack**.
-2.  Run `一键安装.bat` (First time only).
+1.  Download **[SIGI_Deployment_Kit.zip](https://github.com/airp2018/Open-AutoGLM-SIGI/releases)** from Releases.
+2.  Unzip it on your PC.
+3.  Run `Install_Windows.bat` (First time only).
 3.  **Unplug, and Accelerate.**
