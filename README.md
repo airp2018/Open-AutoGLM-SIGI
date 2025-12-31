@@ -74,7 +74,29 @@ SIGI 的灵感源自 **《三体》 (The Three-Body Problem)** 与 **古典赛�
 | **无需电脑** | ❌ 必须连接电脑配置 | ✅ **完全脱离电脑运行** |
 | **体验** | 📟 枯燥的命令行 | 🎮 **沉浸式赛博游戏体验** |
 
-### 05. 创作者介绍
+### 05. 技术架构与目录 (Architecture)
+
+#### 核心目录结构
+```bash
+Open-AutoGLM-SIGI/
+├── android-app/           # Android 宿主工程 (Kotlin)
+│   ├── app/src/main/python/   # 🟢 Python 智能体核心 (Agent Core)
+│   │   ├── agent_main.py      # 核心逻辑入口
+│   │   └── android_helper.py  # 跨语言通信桥梁
+│   └── app/src/main/java/     # 🟡 Android 原生层 (Native Layer)
+│       ├── AutoGLMAccessibilityService.kt # 无障碍服务 (感知+点击)
+│       └── MainActivity.kt    # 赛博朋克 UI 容器
+├── SIGI_Deployment_Kit/   # 🟣 一键部署工具包 (ADB/脚本)
+└── docs/                  # 文档与资源
+```
+
+#### 混合架构原理
+SIGI 采用独创的 **单进程混合架构 (Single-Process Hybrid)**，通过 Chaquopy 将 Python 虚拟机嵌入 Android Runtime。
+1.  **大脑 (Brain)**: Python 层运行 AutoGLM Agent，处理 LLM 推理与任务规划。
+2.  **手眼 (Hand & Eye)**: Android 原生层负责截图 (`MediaProjection`) 和模拟操作 (`AccessibilityService`)。
+3.  **神经 (Nerve)**: 两者通过内存级 JNI 通信，**零延迟**传输指令与数据，彻底告别了传统 HTTP/Socket 通信的卡顿。
+
+### 06. 创作者介绍
 
 **SIGI 由 Yanqiao ([微博 @颜桥](https://weibo.com/n/颜桥)) 创作。**
 
@@ -87,7 +109,7 @@ SIGI 的灵感源自 **《三体》 (The Three-Body Problem)** 与 **古典赛�
 
 > **"AI 时代，技术不再是壁垒。创意人员凭借 Vibe Coding，将把更新鲜的创意与想法，转化为具体有形的产品，我们用创意细节点亮你的产品。"**
 
-### 06. 安装与加入
+### 07. 安装与加入
 
 1.  在 **[Releases](https://github.com/airp2018/Open-AutoGLM-SIGI/releases)** 下载 **SIGI_Deployment_Kit.zip** (一键安装包)。
 2.  解压到电脑。
@@ -96,7 +118,7 @@ SIGI 的灵感源自 **《三体》 (The Three-Body Problem)** 与 **古典赛�
 
 ---
 
-### 07.致敬与声明 (Disclaimer)
+### 08.致敬与声明 (Disclaimer)
 
 *   **创意致敬**: 本项目的产品设计元素、文案风格及世界观设定，致敬了经典科幻小说《三体》(The Three-Body Problem) 及赛博朋克流派作品。其中的"质子封锁"等概念仅作为 UI 叙事元素，旨在提供沉浸式体验。
 *   **非商业用途**: 本项目为 **非商业用途 (Non-Commercial)** 开源项目，仅供个人学习、技术研究及小规模测试使用。禁止未经许可的商业化分发。
