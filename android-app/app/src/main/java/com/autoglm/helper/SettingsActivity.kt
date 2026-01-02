@@ -56,6 +56,11 @@ class SettingsActivity : Activity() {
         setupSfxSpinner()
         startStarSignal()
 
+        settingsStar.setOnClickListener {
+             // 📜 Open Cyber Codex (The Artifact)
+             showCyberCodexDialog()
+        }
+
         // Radio Button Toggle Logic
         // Initialize Spinner Adapter
         // Initialize Spinner Adapter (Simplified: Only ZhipuAI)
@@ -80,26 +85,56 @@ class SettingsActivity : Activity() {
          
          // --- Elastic Drag Logic for Hidden World (Settings) ---
         val uiContainer = findViewById<android.widget.FrameLayout>(R.id.uiContainerSettings)
-        val hiddenWorldBgSettings = findViewById<android.widget.ImageView>(R.id.hiddenWorldBgSettings)
-        val dragTrigger = findViewById<android.view.View>(R.id.dragTriggerSettings)
         
-        // Robust Layout Listener
-        uiContainer.addOnLayoutChangeListener { _, _, top, _, bottom, _, oldTop, _, oldBottom ->
+        // New Dual Containers
+        val hiddenWorldContainerTop = findViewById<android.view.View>(R.id.hiddenWorldContainerTop)
+        val hiddenWorldContainerBottom = findViewById<android.view.View>(R.id.hiddenWorldContainerBottom)
+        
+        // Triggers
+        val dragTriggerTop = findViewById<android.view.View>(R.id.dragTriggerSettings)
+        val dragTriggerBottom = findViewById<android.view.View>(R.id.dragTriggerBottom)
+        val revealArrowTop = findViewById<android.view.View>(R.id.revealArrowSettings)
+        val revealArrowBottom = findViewById<android.view.View>(R.id.revealArrowBottom)
+        
+        // Hardcore Overlays
+        val vBlurMask = findViewById<android.view.View>(R.id.vBlurMask)
+        val hardcore97Overlay = findViewById<android.view.View>(R.id.hardcore97Overlay)
+        val hiddenWorldBgTop = findViewById<android.widget.ImageView>(R.id.hiddenWorldBgTop)
+        val hiddenWorldBgBottom = findViewById<android.widget.ImageView>(R.id.hiddenWorldBgBottom)
+        
+        // Mode-Based Image & Overlay Logic
+        val prefs = getSharedPreferences("AutoGLMConfig", Context.MODE_PRIVATE)
+        val isHardcore = prefs.getBoolean("hardcore_mode", false)
+        if (isHardcore) {
+            // Hardcore: Use different image (97 at top, empty water drop)
+            hiddenWorldBgTop.setImageResource(R.drawable.bg_trisolaris_city_hardcore)
+            hiddenWorldBgBottom.setImageResource(R.drawable.bg_trisolaris_city_hardcore)
+            vBlurMask.visibility = android.view.View.GONE  // No mask needed, image has no 79
+            hardcore97Overlay.visibility = android.view.View.GONE  // No overlay needed, image has 97
+        } else {
+            // Normal: Use original image (79 reflection in water drop)
+            hiddenWorldBgTop.setImageResource(R.drawable.bg_trisolaris_city)
+            hiddenWorldBgBottom.setImageResource(R.drawable.bg_trisolaris_city)
+            vBlurMask.visibility = android.view.View.GONE
+            hardcore97Overlay.visibility = android.view.View.GONE
+        }
+        
+        // Layout Listener
+        uiContainer.addOnLayoutChangeListener { _, _, top, _, bottom, _, _, _, _ ->
             val height = bottom - top
             if (height > 0 && uiContainer.translationY == 0f) {
-                // Initial position: TOP (Sky) - Hidden above screen
-                hiddenWorldBgSettings.translationY = -height.toFloat()
+                hiddenWorldContainerTop.translationY = -height.toFloat()
+                hiddenWorldContainerBottom.translationY = height.toFloat()
             }
         }
         
         // Initial Force Set
         uiContainer.post {
-            resetRevealState(uiContainer, hiddenWorldBgSettings)
+            resetRevealState(uiContainer, hiddenWorldContainerTop, hiddenWorldContainerBottom)
         }
         
-        val revealArrow = findViewById<android.view.View>(R.id.revealArrowSettings)
-        
-        dragTrigger.setOnTouchListener(object : android.view.View.OnTouchListener {
+        // --- TOP DRAG (Always Unlocked - Shows 79 Clue) ---
+        dragTriggerTop.setOnTouchListener(object : android.view.View.OnTouchListener {
              var startY = 0f
              var isLockedIn = false
              
@@ -107,9 +142,7 @@ class SettingsActivity : Activity() {
                  val screenWidth = resources.displayMetrics.widthPixels
                  val centerX = screenWidth / 2f
                  val touchX = event.rawX
-                 
-                 // "Dark Door" Logic: Top Center Zone
-                 val threshold = screenWidth * 0.12f 
+                 val threshold = screenWidth * 0.15f
                  val isInZone = kotlin.math.abs(touchX - centerX) < threshold
                  
                  when (event.action) {
@@ -117,72 +150,183 @@ class SettingsActivity : Activity() {
                          if (isInZone) {
                              isLockedIn = true
                              startY = event.rawY
-                             // Reveal: Low Brightness (Subtle)
-                             revealArrow.animate().alpha(0.3f).setDuration(300).start()
+                             revealArrowTop.animate().alpha(0.6f).setDuration(300).start()
                              v.performHapticFeedback(android.view.HapticFeedbackConstants.KEYBOARD_TAP)
-                         } else {
-                             isLockedIn = false
-                             revealArrow.animate().alpha(0f).setDuration(200).start()
                          }
                          return true
                      }
                      android.view.MotionEvent.ACTION_MOVE -> {
-                         // Exploration Mode for Top Door
                          if (!isLockedIn) {
-                             if (isInZone) {
-                                 isLockedIn = true
-                                 startY = event.rawY
-                                 revealArrow.animate().alpha(0.3f).setDuration(300).start()
-                                 v.performHapticFeedback(android.view.HapticFeedbackConstants.LONG_PRESS)
-                             }
+                             if (isInZone) { isLockedIn = true; startY = event.rawY }
                              return true
                          }
-                         
                          val deltaY = event.rawY - startY
                          val maxDrag = resources.displayMetrics.heightPixels * 0.8f
                          
-                         // PULL DOWN LOGIC (Scanning the Sky)
                          if (deltaY > 0) {
-                             val dampFactor = 0.6f
-                             val targetY = deltaY * dampFactor // Positive translation
-                             
-                             if (kotlin.math.abs(targetY) < maxDrag) {
+                             val targetY = deltaY * 0.6f
+                             if (targetY < maxDrag) {
                                 uiContainer.translationY = targetY
-                                // Image moves DOWN from TOP (-height)
-                                hiddenWorldBgSettings.translationY = -uiContainer.height.toFloat() + targetY
+                                hiddenWorldContainerTop.translationY = -uiContainer.height.toFloat() + targetY
                              }
                          }
                          return true
                      }
                      android.view.MotionEvent.ACTION_UP, android.view.MotionEvent.ACTION_CANCEL -> {
                          isLockedIn = false
-                         // Hide visual cue
-                         revealArrow.animate().alpha(0f).setDuration(400).start()
-                         resetRevealState(uiContainer, hiddenWorldBgSettings, animate = true)
+                         revealArrowTop.animate().alpha(0f).start()
+                         resetRevealState(uiContainer, hiddenWorldContainerTop, hiddenWorldContainerBottom, true)
                          return true
                      }
                  }
                  return false
              }
         })
+        
+        // --- BOTTOM DRAG (The Puzzle - Needs Password) ---
+        dragTriggerBottom.setOnTouchListener(object : android.view.View.OnTouchListener {
+             var startY = 0f
+             var isLockedIn = false
+             var tapCount = 0
+             var lastTapTime = 0L
+             
+             override fun onTouch(v: android.view.View, event: android.view.MotionEvent): Boolean {
+                 val prefs = getSharedPreferences("AutoGLMConfig", Context.MODE_PRIVATE)
+                 val isUnlocked = prefs.getBoolean("settings_ring_unlocked", false)
+                 
+                 // Locked State: 3 Taps to Summon Lock
+                 if (!isUnlocked) {
+                     if (event.action == android.view.MotionEvent.ACTION_DOWN) {
+                         val screenWidth = resources.displayMetrics.widthPixels
+                         if (kotlin.math.abs(event.rawX - screenWidth/2f) < screenWidth * 0.2f) {
+                             // 1. Show Visual Feedback (Arrow appears)
+                             revealArrowBottom.animate().alpha(1f).setDuration(200).start()
+                             revealArrowBottom.animate().scaleX(1.2f).scaleY(1.2f).withEndAction {
+                                 revealArrowBottom.animate().scaleX(1f).scaleY(1f).start()
+                             }.start()
+                             
+                             // 2. Haptic/Audio Feedback
+                             v.performHapticFeedback(android.view.HapticFeedbackConstants.LONG_PRESS)
+                             
+                             // 3. Tap Logic
+                             val curr = System.currentTimeMillis()
+                             if (curr - lastTapTime < 600) tapCount++ else tapCount = 1
+                             lastTapTime = curr
+                             
+                             if (tapCount >= 3) {
+                                 showRingLockDialog()
+                                 tapCount = 0
+                             }
+                         }
+                         return true
+                     } else if (event.action == android.view.MotionEvent.ACTION_UP || event.action == android.view.MotionEvent.ACTION_CANCEL) {
+                         // Hide on release
+                         revealArrowBottom.animate().alpha(0f).setDuration(300).start()
+                         return true
+                     }
+                     return false // Consume nothing else
+                 }
+
+                 
+                 // Unlocked: Allow Drag UP
+                 when (event.action) {
+                     android.view.MotionEvent.ACTION_DOWN -> {
+                         isLockedIn = true
+                         startY = event.rawY
+                         revealArrowBottom.animate().alpha(1f).start()
+                         return true
+                     }
+                     android.view.MotionEvent.ACTION_MOVE -> {
+                         if (!isLockedIn) return true
+                         val deltaY = event.rawY - startY
+                         val maxDrag = resources.displayMetrics.heightPixels * 0.8f
+                         
+                         if (deltaY < 0) {
+                             val targetY = deltaY * 0.6f
+                             if (kotlin.math.abs(targetY) < maxDrag) {
+                                uiContainer.translationY = targetY
+                                hiddenWorldContainerBottom.translationY = uiContainer.height.toFloat() + targetY
+                             }
+                         }
+                         return true
+                     }
+                     android.view.MotionEvent.ACTION_UP, android.view.MotionEvent.ACTION_CANCEL -> {
+                         isLockedIn = false
+                         revealArrowBottom.animate().alpha(0f).start()
+                         resetRevealState(uiContainer, hiddenWorldContainerTop, hiddenWorldContainerBottom, true)
+                         return true
+                     }
+                 }
+                 return false
+             }
+        })
+    } // End of onCreate
+    
+    private fun showRingLockDialog() {
+         // Activate the "Sequence"
+         val prefs = getSharedPreferences("AutoGLMConfig", Context.MODE_PRIVATE)
+         prefs.edit().putBoolean("ring_lock_activated", true).apply() // Mark as seen
+         
+         val dialog = android.app.Dialog(this)
+         dialog.setContentView(R.layout.dialog_proton_lock)
+         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+         
+         val dial1 = dialog.findViewById<android.widget.TextView>(R.id.dial1)
+         val dial2 = dialog.findViewById<android.widget.TextView>(R.id.dial2)
+         val dial3 = dialog.findViewById<android.widget.TextView>(R.id.dial3)
+         val btn = dialog.findViewById<android.view.View>(R.id.btnProtonUnlock)
+         
+         // Dial Interaction Logic
+         val dials = listOf(dial1, dial2, dial3)
+         dials.forEach { dial ->
+             dial.setOnClickListener {
+                 try {
+                     val current = dial.text.toString().toInt()
+                     val next = if (current == 9) 0 else current + 1
+                     dial.text = next.toString()
+                     dial.performHapticFeedback(android.view.HapticFeedbackConstants.KEYBOARD_TAP)
+                 } catch (e: Exception) {}
+             }
+         }
+         
+         btn.setOnClickListener {
+             val code = "${dial1.text}${dial2.text}${dial3.text}"
+             val storedPass = prefs.getString("train_password", "") ?: ""
+             
+             if (code == "666" || (storedPass.isNotEmpty() && code == storedPass)) {
+                 // UNLOCK SUCCESS
+                 prefs.edit().putBoolean("settings_ring_unlocked", true).apply()
+                 android.widget.Toast.makeText(this, "质子封锁已解除 [PROTON LOCK DISENGAGED]", android.widget.Toast.LENGTH_SHORT).show()
+                 
+                 // Provide feedback
+                 val revealArrowBottom = findViewById<android.view.View>(R.id.revealArrowBottom)
+                 revealArrowBottom.animate().alpha(1f).setDuration(500).start()
+                 
+                 dialog.dismiss()
+             } else {
+                 android.widget.Toast.makeText(this, "密钥无效 [ACCESS DENIED]", android.widget.Toast.LENGTH_SHORT).show()
+                 // Shake animation for feedback
+                 val shake = android.view.animation.TranslateAnimation(0f, 20f, 0f, 0f)
+                 shake.duration = 50
+                 shake.repeatCount = 3
+                 shake.repeatMode = android.view.animation.Animation.REVERSE
+                 btn.startAnimation(shake)
+             }
+         }
+         dialog.show()
     }
     
     // Self-healing reset function
-    private fun resetRevealState(ui: android.view.View, bg: android.view.View, animate: Boolean = false) {
+    private fun resetRevealState(ui: android.view.View, topBg: android.view.View, bottomBg: android.view.View, animate: Boolean = false) {
         if (animate) {
-            ui.animate()
-                .translationY(0f)
-                .setDuration(400)
-                .setInterpolator(android.view.animation.OvershootInterpolator(0.8f))
-                .start()
-            bg.animate()
-                .translationY(-ui.height.toFloat()) // Reset to TOP
-                .setDuration(400)
-                .setInterpolator(android.view.animation.OvershootInterpolator(0.8f))
-                .start()
+            ui.animate().translationY(0f).setDuration(400)
+                .setInterpolator(android.view.animation.OvershootInterpolator(0.8f)).start()
+            topBg.animate().translationY(-ui.height.toFloat()).setDuration(400).start()
+            bottomBg.animate().translationY(ui.height.toFloat()).setDuration(400).start()
         } else {
             ui.translationY = 0f
-            bg.translationY = -ui.height.toFloat() // Reset to TOP
+            topBg.translationY = -ui.height.toFloat()
+            bottomBg.translationY = ui.height.toFloat()
         }
     }
     
@@ -329,6 +473,42 @@ class SettingsActivity : Activity() {
         }
         // Toast removed for auto-save to allow silent saving
     }
+    private fun showCyberCodexDialog() {
+         val dialog = android.app.Dialog(this)
+         dialog.setContentView(R.layout.dialog_cyber_codex)
+         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+         
+         // Close Logic
+         dialog.findViewById<android.view.View>(R.id.btnCloseCodex)?.setOnClickListener {
+             dialog.dismiss()
+         }
+         
+         // Collection Logic
+         val prefs = getSharedPreferences("AutoGLMConfig", Context.MODE_PRIVATE)
+         val btnCollection = dialog.findViewById<android.view.View>(R.id.btnCollection)
+         
+         btnCollection?.setOnClickListener {
+             // Visual Feedback
+             it.animate().scaleX(0.8f).scaleY(0.8f).withEndAction {
+                 it.animate().scaleX(1f).scaleY(1f).start()
+             }.start()
+             
+             val isCollected = prefs.getBoolean("ticket_collected", false)
+             if (isCollected) {
+                 val ticketDialog = android.app.Dialog(this)
+                 ticketDialog.setContentView(R.layout.dialog_train_ticket)
+                 ticketDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+                 // Hide Collect Button in view-only mode
+                 ticketDialog.findViewById<android.view.View>(R.id.btnCollectTicket)?.visibility = android.view.View.GONE
+                 ticketDialog.show()
+             } else {
+                 android.widget.Toast.makeText(this, "收藏夹为空 [EMPTY]", android.widget.Toast.LENGTH_SHORT).show()
+             }
+         }
+         
+         dialog.show()
+    }
+
     private fun startStarSignal() {
         // Continuous gentle flashing
         val blinkAnim = android.view.animation.AlphaAnimation(0.2f, 1.0f)
@@ -360,9 +540,10 @@ class SettingsActivity : Activity() {
         
         // Fix stuck UI
         val uiContainer = findViewById<android.widget.FrameLayout>(R.id.uiContainerSettings)
-        val hiddenWorldBgSettings = findViewById<android.widget.ImageView>(R.id.hiddenWorldBgSettings)
-        if (uiContainer != null && hiddenWorldBgSettings != null) {
-            uiContainer.post { resetRevealState(uiContainer, hiddenWorldBgSettings) }
+        val hiddenWorldContainerTop = findViewById<android.view.View>(R.id.hiddenWorldContainerTop)
+        val hiddenWorldContainerBottom = findViewById<android.view.View>(R.id.hiddenWorldContainerBottom)
+        if (uiContainer != null && hiddenWorldContainerTop != null && hiddenWorldContainerBottom != null) {
+            uiContainer.post { resetRevealState(uiContainer, hiddenWorldContainerTop, hiddenWorldContainerBottom) }
         }
     }
 

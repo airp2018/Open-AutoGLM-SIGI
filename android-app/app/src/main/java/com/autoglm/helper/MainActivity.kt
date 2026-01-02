@@ -30,6 +30,7 @@ class MainActivity : Activity(), LogCallback {
     private lateinit var clearInputButton: android.widget.ImageView // Clear Input Button
     private lateinit var btnDoomsdayList: TextView
     private lateinit var btnAddTask: android.widget.ImageView
+    private lateinit var btnModeSwitch: TextView
     
     private val handler = Handler(Looper.getMainLooper())
     private var isTaskRunning = false
@@ -64,6 +65,7 @@ class MainActivity : Activity(), LogCallback {
         clearInputButton = findViewById(R.id.clearInputButton)
         btnDoomsdayList = findViewById(R.id.btnDoomsdayList)
         btnAddTask = findViewById(R.id.btnAddTask)
+        btnModeSwitch = findViewById(R.id.btnModeSwitch) // Initialize
         
         val logLabel = findViewById<TextView>(R.id.logLabel)
         
@@ -200,6 +202,11 @@ class MainActivity : Activity(), LogCallback {
                 addToDoomsdayList(task)
                 Toast.makeText(this, "Protocol Encoded into Doomsday List.", Toast.LENGTH_SHORT).show()
             }
+        }
+        
+        btnModeSwitch.setOnClickListener {
+            playSfx(sfxClick)
+            showModeSelectionDialog()
         }
         
         // Initialize SoundPool
@@ -367,11 +374,7 @@ class MainActivity : Activity(), LogCallback {
         val termGreen = android.graphics.Color.parseColor("#00E676")
         
         // Fix for "Unresolved reference: core" - Use native API with backward compatibility check
-        val typeFace = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            resources.getFont(R.font.vt323_regular)
-        } else {
-            android.graphics.Typeface.MONOSPACE
-        }
+        val typeFace = android.graphics.Typeface.MONOSPACE
         
         protocols.forEach { protocol ->
             val tv = TextView(this)
@@ -514,6 +517,88 @@ class MainActivity : Activity(), LogCallback {
         if (uiContainer != null && hiddenWorldBg != null) {
             uiContainer.post { resetRevealState(uiContainer, hiddenWorldBg) }
         }
+        
+        updateModeSwitchUI()
+    }
+    
+    private fun updateModeSwitchUI() {
+        val prefs = getSharedPreferences("AutoGLMConfig", android.content.Context.MODE_PRIVATE)
+        val saveCount = prefs.getInt("world_save_count", 0)
+        val isHardcore = prefs.getBoolean("hardcore_mode", false)
+        
+        if (saveCount >= 1) {
+             btnModeSwitch.visibility = View.VISIBLE
+             if (isHardcore) {
+                 btnModeSwitch.text = "[ HARDCORE ]"
+                 btnModeSwitch.setTextColor(android.graphics.Color.parseColor("#FF5252"))
+             } else {
+                 btnModeSwitch.text = "[ NORMAL ]"
+                 btnModeSwitch.setTextColor(android.graphics.Color.parseColor("#8800E676"))
+             }
+        } else {
+            btnModeSwitch.visibility = View.GONE
+        }
+    }
+    
+    private fun showModeSelectionDialog() {
+        val prefs = getSharedPreferences("AutoGLMConfig", android.content.Context.MODE_PRIVATE)
+        val isHardcore = prefs.getBoolean("hardcore_mode", false)
+        
+        // Custom Parchment-Style Dialog
+        val dialog = android.app.Dialog(this)
+        dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE)
+        
+        val layout = android.widget.LinearLayout(this)
+        layout.orientation = android.widget.LinearLayout.VERTICAL
+        layout.setBackgroundResource(R.drawable.bg_cyber_parchment)
+        layout.setPadding(48, 48, 48, 48)
+        
+        // Title
+        val title = android.widget.TextView(this)
+        title.text = "MODE SELECT"
+        title.textSize = 16f
+        title.typeface = android.graphics.Typeface.MONOSPACE
+        title.setTextColor(android.graphics.Color.parseColor("#D4AF37"))
+        title.gravity = android.view.Gravity.CENTER
+        layout.addView(title)
+        
+        // Spacer
+        val spacer = android.view.View(this)
+        spacer.layoutParams = android.widget.LinearLayout.LayoutParams(
+            android.widget.LinearLayout.LayoutParams.MATCH_PARENT, 32)
+        layout.addView(spacer)
+        
+        // Option 1: NORMAL
+        val optNormal = android.widget.TextView(this)
+        optNormal.text = if (!isHardcore) "> NORMAL ✓" else "  NORMAL"
+        optNormal.textSize = 14f
+        optNormal.typeface = android.graphics.Typeface.MONOSPACE
+        optNormal.setTextColor(android.graphics.Color.parseColor("#00E676"))
+        optNormal.setPadding(0, 16, 0, 16)
+        optNormal.setOnClickListener {
+            prefs.edit().putBoolean("hardcore_mode", false).apply()
+            updateModeSwitchUI()
+            dialog.dismiss()
+        }
+        layout.addView(optNormal)
+        
+        // Option 2: HARDCORE
+        val optHard = android.widget.TextView(this)
+        optHard.text = if (isHardcore) "> HARDCORE ✓" else "  HARDCORE"
+        optHard.textSize = 14f
+        optHard.typeface = android.graphics.Typeface.MONOSPACE
+        optHard.setTextColor(android.graphics.Color.parseColor("#FF5252"))
+        optHard.setPadding(0, 16, 0, 16)
+        optHard.setOnClickListener {
+            prefs.edit().putBoolean("hardcore_mode", true).apply()
+            updateModeSwitchUI()
+            dialog.dismiss()
+        }
+        layout.addView(optHard)
+        
+        dialog.setContentView(layout)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.show()
     }
     
     private fun applySkin() {
@@ -647,19 +732,26 @@ class MainActivity : Activity(), LogCallback {
         
         btn.setOnClickListener {
             val key = input.text.toString()
-            if (key == "1379") {
+            val prefs = getSharedPreferences("AutoGLMConfig", android.content.Context.MODE_PRIVATE)
+            val isHardcore = prefs.getBoolean("hardcore_mode", false)
+            val correctKey = if (isHardcore) "1397" else "1379"
+            
+            if (key == correctKey) {
                 // PERMANENT UNLOCK
-                val prefs = getSharedPreferences("AutoGLMConfig", android.content.Context.MODE_PRIVATE)
                 
                 // Speed Run Check (Easter Egg: 蒸蚌)
                 val lockTime = prefs.getLong("lockdown_start_time", 0L)
                 val currentTime = System.currentTimeMillis()
                 val isSpeedRun = (lockTime > 0) && ((currentTime - lockTime) < 180000) // < 3 mins
                 
-                prefs.edit()
-                    .putBoolean("permanent_unlock", true) // The Flag of Freedom
-                    .putInt("fatigue_count", 0)
-                    .apply()
+                // Mode-specific persistent unlock
+                if (isHardcore) {
+                    prefs.edit().putBoolean("permanent_unlock_hard", true).apply()
+                } else {
+                    prefs.edit().putBoolean("permanent_unlock", true).apply()
+                }
+                
+                prefs.edit().putInt("fatigue_count", 0).apply()
                 
                 dialog.dismiss()
                 
@@ -691,11 +783,16 @@ class MainActivity : Activity(), LogCallback {
     }
 
     private fun startTask() {
-        // -1. Check for Permanent Unlock (Awakened State)
+        // -1. Check for Permanent Unlock (Mode Specific)
         val prefs = getSharedPreferences("AutoGLMConfig", android.content.Context.MODE_PRIVATE)
-        val isPermanentlyUnlocked = prefs.getBoolean("permanent_unlock", false)
+        val isHardcore = prefs.getBoolean("hardcore_mode", false)
+        val isPermanentlyUnlocked = if (isHardcore) {
+            prefs.getBoolean("permanent_unlock_hard", false)
+        } else {
+            prefs.getBoolean("permanent_unlock", false)
+        }
+        
         if (isPermanentlyUnlocked) {
-            // Bypass all limits
             executeTaskLogic(prefs)
             return
         }
@@ -755,6 +852,22 @@ class MainActivity : Activity(), LogCallback {
         updateStatus() 
         startStarSignal() 
         
+        // --- 🕵️ Hardcore Puzzle Logic: The Train Ticket Password ---
+        var showPasswordReveal = false
+        val isHardcore = prefs.getBoolean("hardcore_mode", false)
+        
+        if (isHardcore) {
+            // Logic: Mandatory trigger for ticket on specific task in Hardcore Mode
+            if (task.contains("北京") && task.contains("上海") && 
+               (task.contains("火车") || task.contains("高铁") || task.contains("票") || task.contains("12306"))) {
+               
+               showPasswordReveal = true
+               // Set inner password for the Settings ring lock
+               prefs.edit().putString("train_password", "666").apply()
+            }
+        }
+        // ---------------------------------------------------------
+        
         // World Save Count (Skin Achievement)
         val saveCount = prefs.getInt("world_save_count", 0) + 1
         prefs.edit().putInt("world_save_count", saveCount).apply()
@@ -769,7 +882,6 @@ class MainActivity : Activity(), LogCallback {
         
         if (apiKey.isNullOrEmpty()) {
             Toast.makeText(this, "⚠️ 未配置 API Key! 请下拉进入设置页配置。", Toast.LENGTH_LONG).show()
-            // Optional: Automatically open settings
             val intent = android.content.Intent(this, SettingsActivity::class.java)
             startActivity(intent)
             return
@@ -790,7 +902,15 @@ class MainActivity : Activity(), LogCallback {
                     isTaskRunning = false
                     stopStarSignal() 
                     updateStatus()
-                    playSfx(sfxComplete) 
+                    playSfx(sfxComplete)
+                    
+                    // --- 🎬 Trigger Puzzle Reveal ---
+                    if (showPasswordReveal) {
+                        handler.postDelayed({
+                            showDoomsdayPasswordDialog()
+                        }, 1500)
+                    }
+                    // -------------------------------
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -803,6 +923,29 @@ class MainActivity : Activity(), LogCallback {
                 }
             }
         }.start()
+    }
+
+    private fun showDoomsdayPasswordDialog() {
+        val prefs = getSharedPreferences("AutoGLMConfig", android.content.Context.MODE_PRIVATE)
+        val isCollected = prefs.getBoolean("ticket_collected", false)
+        
+        if (isCollected) {
+            android.widget.Toast.makeText(this, "票据已归档，请在设置页 [SIGI CYBER CODEX] 中查看", android.widget.Toast.LENGTH_LONG).show()
+            return
+        }
+
+        val dialog = android.app.Dialog(this)
+        dialog.setContentView(R.layout.dialog_train_ticket)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        
+        val btnCollect = dialog.findViewById<android.widget.Button>(R.id.btnCollectTicket)
+        btnCollect.setOnClickListener {
+             prefs.edit().putBoolean("ticket_collected", true).apply()
+             android.widget.Toast.makeText(this, "票据已归档至 [SIGI CYBER CODEX]", android.widget.Toast.LENGTH_LONG).show()
+             dialog.dismiss()
+        }
+        
+        dialog.show()
     }
 
     override fun onLog(message: String) {

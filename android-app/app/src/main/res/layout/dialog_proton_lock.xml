@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_cyber_parchment"
+    android:padding="2dp"> 
+
+    <!-- Inner Dark Container -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#000000"
+        android:padding="24dp"
+        android:gravity="center">
+
+        <!-- Title -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="[ PROTON LOCK ]"
+            android:textColor="#FF5252"
+            android:textSize="18sp"
+            android:fontFamily="@font/vt323_regular"
+            android:letterSpacing="0.1"
+            android:layout_marginBottom="8dp"/>
+            
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="质 子 封 锁 已 启 动"
+            android:textColor="#88FF5252"
+            android:textSize="12sp"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- The 3 Dials -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="24dp">
+
+            <!-- Dial 1 -->
+            <TextView
+                android:id="@+id/dial1"
+                android:layout_width="60dp"
+                android:layout_height="80dp"
+                android:background="@drawable/tech_input_border"
+                android:text="0"
+                android:textSize="48sp"
+                android:textColor="#00E676"
+                android:fontFamily="@font/vt323_regular"
+                android:gravity="center"
+                android:layout_marginEnd="16dp"
+                android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"/>
+
+            <!-- Dial 2 -->
+            <TextView
+                android:id="@+id/dial2"
+                android:layout_width="60dp"
+                android:layout_height="80dp"
+                android:background="@drawable/tech_input_border"
+                android:text="0"
+                android:textSize="48sp"
+                android:textColor="#00E676"
+                android:fontFamily="@font/vt323_regular"
+                android:gravity="center"
+                android:layout_marginEnd="16dp"
+                android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"/>
+
+            <!-- Dial 3 -->
+            <TextView
+                android:id="@+id/dial3"
+                android:layout_width="60dp"
+                android:layout_height="80dp"
+                android:background="@drawable/tech_input_border"
+                android:text="0"
+                android:textSize="48sp"
+                android:textColor="#00E676"
+                android:fontFamily="@font/vt323_regular"
+                android:gravity="center"
+                android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"/>
+        </LinearLayout>
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TAP DIGITS TO CYCLE"
+            android:textColor="#444444"
+            android:textSize="10sp"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- Unlock Button -->
+        <Button
+            android:id="@+id/btnProtonUnlock"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ENGAGE"
+            android:textSize="16sp"
+            android:textColor="#000000"
+            android:backgroundTint="#00E676"
+            android:padding="12dp"/>
+
+    </LinearLayout>
+</FrameLayout>

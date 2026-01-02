@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center">
+
+    <!-- Ticket Card (Paper Background) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#FFECB3" 
+        android:padding="6dp">
+        
+        <!-- Inner Border Effect -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#FFF8E1"
+            android:padding="16dp"
+            android:elevation="4dp">
+            
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+                
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="中国人民铁路"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#5D4037"
+                    android:fontFamily="serif"/>
+                    
+                <View android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1"/>
+                
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2007.10.01"
+                    android:textSize="12sp"
+                    android:textColor="#8D6E63"
+                    android:fontFamily="monospace"/>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#8D6E63"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginBottom="16dp">
+                
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="北 京"
+                    android:textSize="32sp"
+                    android:textColor="#3E2723"
+                    android:textStyle="bold"
+                    android:fontFamily="serif"/>
+                    
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" ↔ "
+                    android:textSize="24sp"
+                    android:textColor="#3E2723"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="12dp"/>
+                    
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="上 海"
+                    android:textSize="32sp"
+                    android:textColor="#3E2723"
+                    android:textStyle="bold"
+                    android:fontFamily="serif"/>
+            </LinearLayout>
+            
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_horizontal"
+                android:layout_marginBottom="24dp">
+                 
+                 <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="全价 137.9元"
+                    android:textSize="14sp"
+                    android:textColor="#5D4037"
+                    android:layout_marginEnd="16dp"
+                    android:fontFamily="serif"
+                    android:background="@drawable/tech_input_border"
+                    android:padding="4dp"/>
+                 
+                 <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="座位: 666"
+                    android:textSize="20sp"
+                    android:textColor="#D50000"
+                    android:textStyle="bold"
+                    android:fontFamily="monospace"/>
+            </LinearLayout>
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="限乘当日当次车  3日内有效"
+                android:textSize="10sp"
+                android:textColor="#8D6E63"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="16dp"
+                android:fontFamily="serif"/>
+                 
+            <Button
+                android:id="@+id/btnCollectTicket"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="[ 收 藏 票 据 ]"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#B71C1C"
+                android:fontFamily="monospace"
+                android:letterSpacing="0.1"/>
+                
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>

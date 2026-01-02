@@ -3,14 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="#111111"
+    android:background="@drawable/bg_hacker_border"
     android:padding="16dp">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="> DOOMSDAY LIST"
-        android:fontFamily="@font/vt323_regular"
+        android:text="末 日 清 单"
+        android:fontFamily="monospace"
         android:textColor="#00E676"
         android:textSize="16sp"
         android:textStyle="bold"
@@ -38,7 +38,7 @@
         android:id="@+id/btnCloseList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="CLOSE LIST"
+        android:text="关 闭"
         android:textColor="#00E676"
         android:textSize="14sp"
         android:fontFamily="@font/vt323_regular"

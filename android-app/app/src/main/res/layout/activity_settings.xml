@@ -41,15 +41,15 @@
             android:layout_marginStart="16dp"
             android:padding="12dp" />
     
-        <!-- The Sparkling Star (Settings Variant) -->
         <ImageView
             android:id="@+id/settingsStar"
-            android:layout_width="8dp"
-            android:layout_height="8dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:padding="20dp"
             android:src="@drawable/star_shape"
             android:layout_gravity="top|end"
-            android:layout_marginTop="56dp"
-            android:layout_marginEnd="32dp"
+            android:layout_marginTop="36dp"
+            android:layout_marginEnd="16dp"
             android:alpha="0.8" />
     
         <LinearLayout
@@ -259,18 +259,97 @@
             android:layout_gravity="top|center_horizontal"
             android:layout_marginTop="12dp"
             android:alpha="0" />
-            
 
+        <!-- Reveal Handle (Bottom) -->
+        <TextView
+            android:id="@+id/revealArrowBottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="▲"
+            android:textColor="#00E676"
+            android:textSize="18sp"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="12dp"
+            android:alpha="0" />
+
+        <View
+            android:id="@+id/dragTriggerBottom"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_gravity="bottom"
+            android:background="#00000000"
+            android:clickable="true"
+            android:focusable="true" />
 
     </FrameLayout>
     
-    <!-- 1. The HIDDEN WORLD (Alien Trisolaris City - The Truth) -->
-    <!-- Positioned at Z-top, but logically below screen initially -->
-    <ImageView
-        android:id="@+id/hiddenWorldBgSettings"
+    <!-- 1. TOP HIDDEN WORLD (Above Screen - Shows water drop at bottom) -->
+    <FrameLayout
+        android:id="@+id/hiddenWorldContainerTop"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:src="@drawable/bg_trisolaris_city" />
+        android:background="#000000">
+        
+        <ImageView
+            android:id="@+id/hiddenWorldBgTop"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/bg_trisolaris_city" />
+             
+        <!-- Blur Mask (For Hardcore - covers ONLY the 79 number inside water drop) -->
+        <View
+            android:id="@+id/vBlurMask"
+            android:layout_width="80dp"
+            android:layout_height="50dp"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="140dp"
+            android:background="#000000"
+            android:visibility="gone"/>
+    </FrameLayout>
+
+    <!-- 3. BOTTOM HIDDEN WORLD (Below Screen - Shows 79 at top) -->
+    <FrameLayout
+        android:id="@+id/hiddenWorldContainerBottom"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#000000">
+        
+        <ImageView
+            android:id="@+id/hiddenWorldBgBottom"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/bg_trisolaris_city" />
+            
+        <!-- Hardcore Overlay: Cover 79 and show 97 -->
+        <FrameLayout
+            android:id="@+id/hardcore97Overlay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|center_horizontal"
+            android:layout_marginTop="50dp"
+            android:visibility="gone">
+            
+            <!-- Cover Block -->
+            <View
+                 android:layout_width="300dp"
+                 android:layout_height="220dp"
+                 android:background="#000000" />
+                 
+            <!-- The Fake 97 -->
+            <TextView
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:text="97"
+                 android:textSize="200sp"
+                 android:textColor="#FF5252"
+                 android:fontFamily="monospace"
+                 android:layout_gravity="center"
+                 android:includeFontPadding="false"
+                 android:lineSpacingMultiplier="0.8"
+                 android:alpha="0.9"/>
+        </FrameLayout>
+    </FrameLayout>
         
 </FrameLayout>

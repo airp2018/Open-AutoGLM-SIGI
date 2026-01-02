@@ -111,13 +111,16 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/tech_input_border"
                     android:hint="> Input 'Thought Seal' Command..."
-                    android:fontFamily="@font/vt323_regular"
-                    android:textSize="18sp"
+                    android:fontFamily="monospace"
+                    android:textSize="14sp"
                     android:textColorHint="@color/terminal_green_dark"
                     android:textColor="@color/terminal_green"
                     android:inputType="textMultiLine"
                     android:minLines="3"
-                    android:padding="16dp" />
+                    android:paddingTop="16dp"
+                    android:paddingBottom="16dp"
+                    android:paddingStart="48dp"
+                    android:paddingEnd="48dp" />
     
                 <ImageView
                     android:id="@+id/clearInputButton"
@@ -146,6 +149,22 @@
                     android:background="?android:attr/selectableItemBackgroundBorderless"
                     android:contentDescription="Add to list" />
             </FrameLayout>
+
+            <!-- Mode Switcher (Visible after first save) -->
+            <TextView
+                android:id="@+id/btnModeSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="[ SYSTEM MODE: NORMAL ]"
+                android:fontFamily="monospace"
+                android:textColor="#8800E676"
+                android:textSize="10sp"
+                android:layout_gravity="end"
+                android:layout_marginEnd="4dp"
+                android:layout_marginBottom="8dp"
+                android:padding="4dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:visibility="gone" />
     
             <LinearLayout
                 android:layout_width="match_parent"

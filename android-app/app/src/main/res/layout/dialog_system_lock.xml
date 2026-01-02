@@ -64,7 +64,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="在高维空间崩塌前（3分钟内）解锁，将获得奖励。"
+        android:text="请寻找失落的 SIGI CYBER CODEX，找到密码线索。"
         android:textColor="#55FFFFFF"
         android:textSize="10sp"
         android:fontFamily="monospace"
