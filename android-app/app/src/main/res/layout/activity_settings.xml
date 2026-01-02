@@ -250,14 +250,15 @@
         
         <!-- Reveal Handle (Top) -->
         <TextView
+            android:id="@+id/revealArrowSettings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="▼"
-            android:textColor="#5500E676"
+            android:textColor="#00E676"
             android:textSize="18sp"
             android:layout_gravity="top|center_horizontal"
-            android:layout_marginTop="8dp"
-            android:alpha="0.6" />
+            android:layout_marginTop="12dp"
+            android:alpha="0" />
             
 
 

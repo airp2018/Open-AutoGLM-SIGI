@@ -275,14 +275,15 @@
 
         <!-- Reveal Handle (Bottom) -->
         <TextView
+            android:id="@+id/revealArrow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="▲"
-            android:textColor="#5500E676"
+            android:textColor="#00E676"
             android:textSize="18sp"
             android:layout_gravity="bottom|center_horizontal"
-            android:layout_marginBottom="8dp"
-            android:alpha="0.6" />
+            android:layout_marginBottom="12dp"
+            android:alpha="0" />
             
         <!-- Drag Trigger Area (Transparent) -->
         <View

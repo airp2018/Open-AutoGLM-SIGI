@@ -97,19 +97,47 @@ class SettingsActivity : Activity() {
             resetRevealState(uiContainer, hiddenWorldBgSettings)
         }
         
+        val revealArrow = findViewById<android.view.View>(R.id.revealArrowSettings)
+        
         dragTrigger.setOnTouchListener(object : android.view.View.OnTouchListener {
              var startY = 0f
-             var isDragging = false
+             var isLockedIn = false
              
              override fun onTouch(v: android.view.View, event: android.view.MotionEvent): Boolean {
+                 val screenWidth = resources.displayMetrics.widthPixels
+                 val centerX = screenWidth / 2f
+                 val touchX = event.rawX
+                 
+                 // "Dark Door" Logic: Top Center Zone
+                 val threshold = screenWidth * 0.12f 
+                 val isInZone = kotlin.math.abs(touchX - centerX) < threshold
+                 
                  when (event.action) {
                      android.view.MotionEvent.ACTION_DOWN -> {
-                         startY = event.rawY
-                         isDragging = true
+                         if (isInZone) {
+                             isLockedIn = true
+                             startY = event.rawY
+                             // Reveal: Low Brightness (Subtle)
+                             revealArrow.animate().alpha(0.3f).setDuration(300).start()
+                             v.performHapticFeedback(android.view.HapticFeedbackConstants.KEYBOARD_TAP)
+                         } else {
+                             isLockedIn = false
+                             revealArrow.animate().alpha(0f).setDuration(200).start()
+                         }
                          return true
                      }
                      android.view.MotionEvent.ACTION_MOVE -> {
-                         if (!isDragging) return false
+                         // Exploration Mode for Top Door
+                         if (!isLockedIn) {
+                             if (isInZone) {
+                                 isLockedIn = true
+                                 startY = event.rawY
+                                 revealArrow.animate().alpha(0.3f).setDuration(300).start()
+                                 v.performHapticFeedback(android.view.HapticFeedbackConstants.LONG_PRESS)
+                             }
+                             return true
+                         }
+                         
                          val deltaY = event.rawY - startY
                          val maxDrag = resources.displayMetrics.heightPixels * 0.8f
                          
@@ -127,7 +155,9 @@ class SettingsActivity : Activity() {
                          return true
                      }
                      android.view.MotionEvent.ACTION_UP, android.view.MotionEvent.ACTION_CANCEL -> {
-                         isDragging = false
+                         isLockedIn = false
+                         // Hide visual cue
+                         revealArrow.animate().alpha(0f).setDuration(400).start()
                          resetRevealState(uiContainer, hiddenWorldBgSettings, animate = true)
                          return true
                      }
