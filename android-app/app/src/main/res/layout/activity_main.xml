@@ -76,7 +76,7 @@
                 android:text="打开无障碍权限"
                 android:fontFamily="@font/vt323_regular"
                 android:textColor="@color/terminal_green"
-                android:textSize="12sp"
+                android:textSize="10sp"
                 android:clickable="true"
                 android:focusable="true"
                 android:background="?android:attr/selectableItemBackground"

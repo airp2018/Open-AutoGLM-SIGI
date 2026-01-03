@@ -24,7 +24,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="◀"
-                android:textSize="18sp"
+                android:textSize="14sp"
                 android:textColor="#D4AF37"
                 android:padding="12dp"
                 android:clickable="true"

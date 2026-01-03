@@ -755,8 +755,12 @@ class MainActivity : Activity(), LogCallback {
                 
                 dialog.dismiss()
                 
-                if (isSpeedRun) {
-                     // 🥚 Easter Egg: Zheng Bang!
+                if (isHardcore) {
+                    // Hardcore Mode Reward: Gomoku Skill
+                    playSfx(sfxComplete)
+                    Toast.makeText(this, "高维防御已攻破。\n[ 获得技能五子棋 ]", Toast.LENGTH_LONG).show()
+                } else {
+                     // Normal/Easy Mode Reward: Zheng Bang (Easter Egg)
                      playSfx(sfxComplete)
                      val toast = Toast.makeText(this, "\n   蒸 蚌 !!!   \n   (Zheng Bang)   \n", Toast.LENGTH_LONG)
                      val view = toast.view
@@ -767,9 +771,6 @@ class MainActivity : Activity(), LogCallback {
                      text?.typeface = android.graphics.Typeface.DEFAULT_BOLD
                      text?.gravity = android.view.Gravity.CENTER
                      toast.show()
-                } else {
-                    Toast.makeText(this, "高维防御系统已破解，限制永久移除。", Toast.LENGTH_LONG).show()
-                    playSfx(sfxComplete)
                 }
             } else {
                 Toast.makeText(this, "访问拒绝，密钥无效。", Toast.LENGTH_SHORT).show()

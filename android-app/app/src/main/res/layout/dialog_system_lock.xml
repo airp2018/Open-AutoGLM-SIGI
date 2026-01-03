@@ -20,7 +20,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="思维负载已超限。\n您目前被困在虚拟赛博空间。"
+        android:text="思维负载已超限。\n你目前被困赛博时空。"
         android:textColor="#FFFFFF"
         android:textSize="14sp"
         android:fontFamily="monospace"

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="300dp"
+    android:layout_width="260dp"
     android:layout_height="wrap_content"
     android:layout_gravity="center">
 
@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="#FFF8E1"
-            android:padding="16dp"
+            android:padding="12dp"
             android:elevation="4dp">
             
             <LinearLayout
@@ -31,10 +31,10 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="中国人民铁路"
-                    android:textSize="18sp"
+                    android:text="铁路货运单"
+                    android:textSize="20sp"
                     android:textStyle="bold"
-                    android:textColor="#5D4037"
+                    android:textColor="#3E2723"
                     android:fontFamily="serif"/>
                     
                 <View android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1"/>
@@ -94,45 +94,39 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="center_horizontal"
-                android:layout_marginBottom="24dp">
-                 
+                android:gravity="center"
+                android:layout_marginBottom="16dp">
+
                  <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="全价 137.9元"
-                    android:textSize="14sp"
-                    android:textColor="#5D4037"
-                    android:layout_marginEnd="16dp"
-                    android:fontFamily="serif"
-                    android:background="@drawable/tech_input_border"
-                    android:padding="4dp"/>
-                 
-                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="座位: 666"
-                    android:textSize="20sp"
+                    android:text="货号: 666"
+                    android:textSize="24sp"
                     android:textColor="#D50000"
                     android:textStyle="bold"
-                    android:fontFamily="monospace"/>
+                    android:fontFamily="monospace"
+                    android:background="@drawable/tech_input_border"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"/>
             </LinearLayout>
             
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="限乘当日当次车  3日内有效"
+                android:text="承运物品：SIGI 原型芯片 (绝密)"
                 android:textSize="10sp"
-                android:textColor="#8D6E63"
+                android:textColor="#5D4037"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="12dp"
                 android:fontFamily="serif"/>
                  
             <Button
                 android:id="@+id/btnCollectTicket"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="[ 收 藏 票 据 ]"
+                android:text="[ 收 藏 货 单 ]"
                 android:textColor="#FFFFFF"
                 android:backgroundTint="#B71C1C"
                 android:fontFamily="monospace"
