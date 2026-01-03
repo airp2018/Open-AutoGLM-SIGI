@@ -20,9 +20,11 @@
 > 如果你厌倦了冰冷的效率工具，不妨试试这个疯狂的想法：**把 GUI Agent 重构为一台来自末日的赛博终端。**
 > 打破“工具”与“游戏”的界限，用叙事重塑交互。这不仅是一个助手，更是你口袋里的**微型赛博剧场**。
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Platform](https://img.shields.io/badge/platform-Android-green.svg)](https://developer.android.com)
-[![Vibe](https://img.shields.io/badge/Vibe-Coding-purple.svg)](#creator)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/airp2018/Open-AutoGLM-SIGI?color=00E676&label=SIGI%20Version&style=flat-square)](https://github.com/airp2018/Open-AutoGLM-SIGI/releases)
+[![License](https://img.shields.io/github/license/airp2018/Open-AutoGLM-SIGI?color=blue&style=flat-square)](LICENSE)
+[![GitHub repo size](https://img.shields.io/github/repo-size/airp2018/Open-AutoGLM-SIGI?style=flat-square)](https://github.com/airp2018/Open-AutoGLM-SIGI)
+[![Platform](https://img.shields.io/badge/platform-Android-green.svg?style=flat-square)](https://developer.android.com)
+[![Vibe](https://img.shields.io/badge/Vibe-Coding-purple.svg?style=flat-square)](#creator)
 
 ---
 
