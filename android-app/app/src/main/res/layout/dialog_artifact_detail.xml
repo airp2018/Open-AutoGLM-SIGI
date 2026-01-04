@@ -92,14 +92,6 @@
 
     </FrameLayout>
 
-    <!-- Close Hint -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="[ TAP TO CLOSE ]"
-        android:textColor="#00E676"
-        android:fontFamily="monospace"
-        android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginBottom="64dp"/>
+
 
 </FrameLayout>

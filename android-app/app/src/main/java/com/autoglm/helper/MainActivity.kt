@@ -756,21 +756,28 @@ class MainActivity : Activity(), LogCallback {
             // runOnUiThread { Toast.makeText(this, "Debug: Mode=${if(currentHardcore) "HARD" else "EASY"}", Toast.LENGTH_SHORT).show() }
             
             // Mode-specific persistent unlock
+            // Mode-specific persistent unlock
             if (currentHardcore) {
                 currentPrefs.edit().putBoolean("permanent_unlock_hard", true).apply()
                 
-                // REWARD
-                currentPrefs.edit().putBoolean("skill_gomoku_unlocked", true).apply() 
+                // REWARD: Artifact + 100 Credits
+                currentPrefs.edit().putBoolean("skill_gomoku_unlocked", true).apply()
+                val currentCoins = currentPrefs.getInt("agent_coins", 0)
+                currentPrefs.edit().putInt("agent_coins", currentCoins + 100).apply()
+                
                 playSfx(sfxComplete)
-                Toast.makeText(this, "[ 得到牛爷爷 ]", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "[ 得到牛爷爷 ] (CREDITS +100)", Toast.LENGTH_LONG).show()
                 
             } else {
                 currentPrefs.edit().putBoolean("permanent_unlock", true).apply()
                 
-                // REWARD
+                // REWARD: Artifact + 50 Credits
+                val currentCoins = currentPrefs.getInt("agent_coins", 0)
+                currentPrefs.edit().putInt("agent_coins", currentCoins + 50).apply()
+                
                 playSfx(sfxComplete)
                 // Show Zheng Bang Toast
-                val toast = Toast.makeText(this, "\n   蒸 蚌 !!!   \n   (Zheng Bang)   \n", Toast.LENGTH_LONG)
+                val toast = Toast.makeText(this, "\n   蒸 蚌 !!!   \n   (Zheng Bang)   \n   (CREDITS +50)   \n", Toast.LENGTH_LONG)
                 val view = toast.view
                 view?.setBackgroundColor(android.graphics.Color.parseColor("#FFD700"))
                 val text = view?.findViewById<TextView>(android.R.id.message)

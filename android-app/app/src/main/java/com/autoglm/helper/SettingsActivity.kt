@@ -619,14 +619,8 @@ class SettingsActivity : Activity() {
                 img.setImageResource(R.drawable.asset_banknote_hardcore)
                 
                 // --- HARDCORE CONFIG (Dragon) ---
-                overlayContainer.visibility = android.view.View.VISIBLE
-                tvLeft.visibility = android.view.View.VISIBLE
-                tvRight.visibility = android.view.View.VISIBLE
-                tvLeft.text = "100"
-                tvRight.text = "100"
-                
-                tvName.visibility = android.view.View.VISIBLE
-                tvName.text = " 梆 梆 "  // Bang Bang
+                // New images are perfect, NO OVERLAY needed
+                overlayContainer.visibility = android.view.View.GONE
                 
             } else {
                 img.setImageResource(R.drawable.asset_banknote_cat)
