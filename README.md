@@ -9,6 +9,16 @@
 
 # AutoGLM-SIGI: 最后的赛博终端 (The Last Cyberphone)
 
+## 🌟 SIGI v3.1: AGENT 经济系统上线
+
+> **SIGI v3.1: 在 v3.1 版本中，我们首次引入了 Agent 介入游戏虚拟经济 的概念，可以通过与 Agent 协作积累积分，发行两种游戏代币。而未来，将用社区代币置换真实的创意服务。敬请关注。**
+
+<p align="center">
+  <img src="android-app/app/src/main/res/drawable/asset_banknote_hardcore.png" width="48%" />
+  <img src="android-app/app/src/main/res/drawable/asset_banknote_cat.png" width="48%" />
+</p>
+
+
 > **"This is the way the world ends. Not with a bang but a whimper."**
 > **"世界就这样结束了，不是一声巨响，而是一声呜咽。"**
 > — *T.S. Eliot, The Hollow Men*
