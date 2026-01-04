@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#DD000000"
+    android:clickable="true"
+    android:focusable="true">
+
+    <!-- The Artifact Container with Shadow Simulation -->
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="4dp"
+        android:background="@drawable/tech_input_border"> 
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <!-- The Raw Image (Dragon/Cat) -->
+            <ImageView
+                android:id="@+id/detailImage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:src="@drawable/asset_banknote_dragon"
+                android:scaleType="fitCenter"/>
+
+            <!-- OVERLAY CONTAINER (Only visible for Dragon Note) -->
+            <FrameLayout
+                android:id="@+id/overlayContainer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <!-- OVERLAY: Fix the "50" to "100" (Top Left) -->
+                <TextView
+                    android:id="@+id/overlayValueLeft"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="100"
+                    android:textSize="28sp"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold"
+                    android:layout_gravity="top|start"
+                    android:layout_marginStart="14dp"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="sans-serif-black"
+                    android:shadowColor="#000000"
+                    android:shadowDx="2"
+                    android:shadowDy="2"
+                    android:shadowRadius="4"/>
+    
+                <!-- OVERLAY: Fix the "50" to "100" (Top Right) -->
+                <TextView
+                    android:id="@+id/overlayValueRight"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="100"
+                    android:textSize="28sp"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold"
+                    android:layout_gravity="top|end"
+                    android:layout_marginEnd="14dp"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="sans-serif-black"
+                    android:shadowColor="#000000"
+                    android:shadowDx="2"
+                    android:shadowDy="2"
+                    android:shadowRadius="4"/>
+    
+                <!-- OVERLAY: Fix the Chinese Text (Bottom Center) -->
+                <TextView
+                    android:id="@+id/overlayName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" 技能：五子棋 "
+                    android:textSize="18sp"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold"
+                    android:layout_gravity="bottom|center_horizontal"
+                    android:layout_marginBottom="18dp"
+                    android:background="#AA000000"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
+                    android:fontFamily="sans-serif-condensed"/>
+            </FrameLayout>
+
+        </FrameLayout>
+
+    </FrameLayout>
+
+    <!-- Close Hint -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="[ TAP TO CLOSE ]"
+        android:textColor="#00E676"
+        android:fontFamily="monospace"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="64dp"/>
+
+</FrameLayout>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="320dp"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@drawable/bg_cyber_parchment"
@@ -22,6 +22,17 @@
         android:paddingBottom="12dp"
         android:layout_marginBottom="12dp"
         android:background="@drawable/tech_separator_line_bottom" />
+
+    <TextView
+        android:id="@+id/tvDoomsdayBalance"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="CREDITS: 0"
+        android:textColor="#FFD700"
+        android:textSize="12sp"
+        android:fontFamily="monospace"
+        android:paddingBottom="8dp" />
 
     <ScrollView
         android:layout_width="match_parent"

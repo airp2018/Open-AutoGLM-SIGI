@@ -32,6 +32,7 @@
                 android:background="?android:attr/selectableItemBackground"/>
 
             <TextView
+                android:id="@+id/tvCodexTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -59,145 +60,168 @@
                 android:background="?android:attr/selectableItemBackground"/>
         </LinearLayout>
 
-        <!-- 1. 文明毁坏 -->
-        <TextView
+        <!-- Container 1: The Text List (Lore) -->
+        <LinearLayout
+            android:id="@+id/layoutCodexList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="01. [文明毁坏]"
-            android:fontFamily="monospace"
-            android:textColor="#00FF88"
-            android:textSize="13sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="4dp"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="一键按钮，引来S星入侵，地球毁坏。S星入侵中途，又被H星灭族。危机时刻，地球文明被存储在名为SIGI的超级芯片中，通过最后一部手机，可访问SIGI赛博时空。"
-            android:fontFamily="sans-serif-light"
-            android:textColor="#CCCCCC"
-            android:textSize="12sp"
-            android:lineSpacingMultiplier="1.2"
-            android:layout_marginBottom="16dp"/>
+            android:orientation="vertical"
+            android:visibility="visible">
 
-        <!-- 2. 时空结构 -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="02. [时空结构]"
-            android:fontFamily="monospace"
-            android:textColor="#00FF88"
-            android:textSize="13sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="4dp"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="SIGI为环形时空结构，像一架转动的风车。过去、现在、未来如同一张张胶片。请务必牢记这点，你将获得好运。"
-            android:fontFamily="sans-serif-light"
-            android:textColor="#CCCCCC"
-            android:textSize="12sp"
-            android:lineSpacingMultiplier="1.2"
-            android:layout_marginBottom="16dp"/>
+            <!-- 1. 文明毁坏 -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="01. [文明毁坏]"
+                android:fontFamily="monospace"
+                android:textColor="#00FF88"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="4dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="一键按钮，引来S星入侵，地球毁坏。S星入侵中途，又被H星灭族。危机时刻，地球文明被存储在名为SIGI的超级芯片中，通过最后一部手机，可访问SIGI赛博时空。"
+                android:fontFamily="sans-serif-light"
+                android:textColor="#CCCCCC"
+                android:textSize="12sp"
+                android:lineSpacingMultiplier="1.2"
+                android:layout_marginBottom="16dp"/>
 
-        <!-- 3. 末日列车 -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="03. [末日列车]"
-            android:fontFamily="monospace"
-            android:textColor="#00FF88"
-            android:textSize="13sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="4dp"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="在异族入侵，高纬度地区迅速冰冻，低温或损坏芯片。我方登上最后一辆列车，押解芯片的列车，从北京开往上海。"
-            android:fontFamily="sans-serif-light"
-            android:textColor="#CCCCCC"
-            android:textSize="12sp"
-            android:lineSpacingMultiplier="1.2"
-            android:layout_marginBottom="16dp"/>
+            <!-- 2. 时空结构 -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="02. [时空结构]"
+                android:fontFamily="monospace"
+                android:textColor="#00FF88"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="4dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="SIGI为环形时空结构，像一架转动的风车。过去、现在、未来如同一张张胶片。请务必牢记这点，你将获得好运。"
+                android:fontFamily="sans-serif-light"
+                android:textColor="#CCCCCC"
+                android:textSize="12sp"
+                android:lineSpacingMultiplier="1.2"
+                android:layout_marginBottom="16dp"/>
 
-        <!-- 4. 循环封锁 -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="04. [循环封锁]"
-            android:fontFamily="monospace"
-            android:textColor="#00FF88"
-            android:textSize="13sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="4dp"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="SIGI以数字7为一次循环，在循环中空间出现质子封锁，你将被控制在极小的胶囊空间里，无法移动。7是你的噩运数字，而3会是你的幸运数字。"
-            android:fontFamily="sans-serif-light"
-            android:textColor="#CCCCCC"
-            android:textSize="12sp"
-            android:lineSpacingMultiplier="1.2"
-            android:layout_marginBottom="16dp"/>
+            <!-- 3. 末日列车 -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="03. [末日列车]"
+                android:fontFamily="monospace"
+                android:textColor="#00FF88"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="4dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="在异族入侵，高纬度地区迅速冰冻，低温或损坏芯片。我方登上最后一辆列车，押解芯片的列车，从北京开往上海。"
+                android:fontFamily="sans-serif-light"
+                android:textColor="#CCCCCC"
+                android:textSize="12sp"
+                android:lineSpacingMultiplier="1.2"
+                android:layout_marginBottom="16dp"/>
 
-        <!-- 5. 宇宙涟漪 -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="05. [宇宙涟漪]"
-            android:fontFamily="monospace"
-            android:textColor="#00FF88"
-            android:textSize="13sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="4dp"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="你听到的电子音乐为《宇宙涟漪》，将音乐信号转成量子态，特定操作产生量子纠缠后传输，这是人类最后的“文明信号”。"
-            android:fontFamily="sans-serif-light"
-            android:textColor="#CCCCCC"
-            android:textSize="12sp"
-            android:lineSpacingMultiplier="1.2"
-            android:layout_marginBottom="16dp"/>
+            <!-- 4. 循环封锁 -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="04. [循环封锁]"
+                android:fontFamily="monospace"
+                android:textColor="#00FF88"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="4dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="SIGI以数字7为一次循环，在循环中空间出现质子封锁，你将被控制在极小的胶囊空间里，无法移动。7是你的噩运数字，而3会是你的幸运数字。"
+                android:fontFamily="sans-serif-light"
+                android:textColor="#CCCCCC"
+                android:textSize="12sp"
+                android:lineSpacingMultiplier="1.2"
+                android:layout_marginBottom="16dp"/>
 
-        <!-- 6. 手势暗门 -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="06. [手势暗门]"
-            android:fontFamily="monospace"
-            android:textColor="#00FF88"
-            android:textSize="13sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="4dp"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="从手机如何进入SIGI到高维空间，你需要记住：敲击、拨动和试探。页面上可能存在不明暗格，通往高维空间。"
-            android:fontFamily="sans-serif-light"
-            android:textColor="#CCCCCC"
-            android:textSize="12sp"
-            android:lineSpacingMultiplier="1.2"
-            android:layout_marginBottom="16dp"/>
+            <!-- 5. 宇宙涟漪 -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="05. [宇宙涟漪]"
+                android:fontFamily="monospace"
+                android:textColor="#00FF88"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="4dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="你听到的电子音乐为《宇宙涟漪》，将音乐信号转成量子态，特定操作产生量子纠缠后传输，这是人类最后的“文明信号”。"
+                android:fontFamily="sans-serif-light"
+                android:textColor="#CCCCCC"
+                android:textSize="12sp"
+                android:lineSpacingMultiplier="1.2"
+                android:layout_marginBottom="16dp"/>
 
-        <!-- 7. 水滴坍缩 -->
-        <TextView
+            <!-- 6. 手势暗门 -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="06. [手势暗门]"
+                android:fontFamily="monospace"
+                android:textColor="#00FF88"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="4dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="从手机如何进入SIGI到高维空间，你需要记住：敲击、拨动和试探。页面上可能存在不明暗格，通往高维空间。"
+                android:fontFamily="sans-serif-light"
+                android:textColor="#CCCCCC"
+                android:textSize="12sp"
+                android:lineSpacingMultiplier="1.2"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- 7. 水滴坍缩 -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="07. [水滴坍缩]"
+                android:fontFamily="monospace"
+                android:textColor="#00FF88"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="4dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="S星球被H星降维打击，整个星球坍缩为流线型水滴，其他世界碎裂为水晶，散逸四处。"
+                android:fontFamily="sans-serif-light"
+                android:textColor="#CCCCCC"
+                android:textSize="12sp"
+                android:lineSpacingMultiplier="1.2"
+                android:layout_marginBottom="24dp"/>
+                
+        </LinearLayout>
+
+        <!-- Container 2: The Artifact Showcase (Grid) -->
+        <!-- Initially Hidden -->
+        <GridLayout
+            android:id="@+id/layoutArtifactGrid"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="07. [水滴坍缩]"
-            android:fontFamily="monospace"
-            android:textColor="#00FF88"
-            android:textSize="13sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="4dp"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="S星球被H星降维打击，整个星球坍缩为流线型水滴，其他世界碎裂为水晶，散逸四处。"
-            android:fontFamily="sans-serif-light"
-            android:textColor="#CCCCCC"
-            android:textSize="12sp"
-            android:lineSpacingMultiplier="1.2"
-            android:layout_marginBottom="24dp"/>
+            android:columnCount="2"
+            android:alignmentMode="alignMargins"
+            android:visibility="gone"
+            android:layout_gravity="center_horizontal">
+            <!-- Items added dynamically -->
+        </GridLayout>
 
         <!-- Footer Seal -->
         <TextView

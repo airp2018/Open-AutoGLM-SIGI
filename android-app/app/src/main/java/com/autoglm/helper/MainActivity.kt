@@ -363,6 +363,10 @@ class MainActivity : Activity(), LogCallback {
         
         val listContainer = dialog.findViewById<android.widget.LinearLayout>(R.id.listContainer)
         val btnClose = dialog.findViewById<Button>(R.id.btnCloseList)
+        val tvBalance = dialog.findViewById<TextView>(R.id.tvDoomsdayBalance)
+        
+        // Show Balance
+        tvBalance.text = "CREDITS: ${getCoins()}"
         
         // Load List
         val prefs = getSharedPreferences("AutoGLMConfig", android.content.Context.MODE_PRIVATE)
@@ -729,52 +733,78 @@ class MainActivity : Activity(), LogCallback {
         
         val input = dialog.findViewById<EditText>(R.id.inputUnlockKey)
         val btn = dialog.findViewById<Button>(R.id.btnUnlock)
+        val btnPay = dialog.findViewById<Button>(R.id.btnPayRansom)
+        val tvBalance = dialog.findViewById<TextView>(R.id.tvRansomBalance)
+        
+        val prefs = getSharedPreferences("AutoGLMConfig", android.content.Context.MODE_PRIVATE)
+        val isHardcore = prefs.getBoolean("hardcore_mode", false)
+        val cost = if (isHardcore) 188 else 66
+        
+        // Update UI
+        val currentCoins = getCoins()
+        tvBalance.text = "CREDITS: $currentCoins"
+        btnPay.text = "UNBLOCK [ $cost ]"
+        
+        // --- Success Logic Function ---
+        // --- Success Logic Function ---
+        fun performUnlock() {
+            // FORCE RELOAD PREFS to be absolutely sure
+            val currentPrefs = getSharedPreferences("AutoGLMConfig", android.content.Context.MODE_PRIVATE)
+            val currentHardcore = currentPrefs.getBoolean("hardcore_mode", false)
+            
+            // Debug: Tell user what mode caused this unlock
+            // runOnUiThread { Toast.makeText(this, "Debug: Mode=${if(currentHardcore) "HARD" else "EASY"}", Toast.LENGTH_SHORT).show() }
+            
+            // Mode-specific persistent unlock
+            if (currentHardcore) {
+                currentPrefs.edit().putBoolean("permanent_unlock_hard", true).apply()
+                
+                // REWARD
+                currentPrefs.edit().putBoolean("skill_gomoku_unlocked", true).apply() 
+                playSfx(sfxComplete)
+                Toast.makeText(this, "[ 得到牛爷爷 ]", Toast.LENGTH_LONG).show()
+                
+            } else {
+                currentPrefs.edit().putBoolean("permanent_unlock", true).apply()
+                
+                // REWARD
+                playSfx(sfxComplete)
+                // Show Zheng Bang Toast
+                val toast = Toast.makeText(this, "\n   蒸 蚌 !!!   \n   (Zheng Bang)   \n", Toast.LENGTH_LONG)
+                val view = toast.view
+                view?.setBackgroundColor(android.graphics.Color.parseColor("#FFD700"))
+                val text = view?.findViewById<TextView>(android.R.id.message)
+                text?.setTextColor(android.graphics.Color.BLACK)
+                text?.textSize = 24f
+                text?.typeface = android.graphics.Typeface.DEFAULT_BOLD
+                text?.gravity = android.view.Gravity.CENTER
+                toast.show()
+            }
+            
+            currentPrefs.edit().putInt("fatigue_count", 0).apply()
+            dialog.dismiss()
+        }
+        // -----------------------------
         
         btn.setOnClickListener {
             val key = input.text.toString()
-            val prefs = getSharedPreferences("AutoGLMConfig", android.content.Context.MODE_PRIVATE)
-            val isHardcore = prefs.getBoolean("hardcore_mode", false)
             val correctKey = if (isHardcore) "1397" else "1379"
             
             if (key == correctKey) {
-                // PERMANENT UNLOCK
-                
-                // Speed Run Check (Easter Egg: 蒸蚌)
-                val lockTime = prefs.getLong("lockdown_start_time", 0L)
-                val currentTime = System.currentTimeMillis()
-                val isSpeedRun = (lockTime > 0) && ((currentTime - lockTime) < 180000) // < 3 mins
-                
-                // Mode-specific persistent unlock
-                if (isHardcore) {
-                    prefs.edit().putBoolean("permanent_unlock_hard", true).apply()
-                } else {
-                    prefs.edit().putBoolean("permanent_unlock", true).apply()
-                }
-                
-                prefs.edit().putInt("fatigue_count", 0).apply()
-                
-                dialog.dismiss()
-                
-                if (isHardcore) {
-                    // Hardcore Mode Reward: Gomoku Skill
-                    playSfx(sfxComplete)
-                    Toast.makeText(this, "高维防御已攻破。\n[ 获得技能五子棋 ]", Toast.LENGTH_LONG).show()
-                } else {
-                     // Normal/Easy Mode Reward: Zheng Bang (Easter Egg)
-                     playSfx(sfxComplete)
-                     val toast = Toast.makeText(this, "\n   蒸 蚌 !!!   \n   (Zheng Bang)   \n", Toast.LENGTH_LONG)
-                     val view = toast.view
-                     view?.setBackgroundColor(android.graphics.Color.parseColor("#FFD700")) // Gold
-                     val text = view?.findViewById<TextView>(android.R.id.message)
-                     text?.setTextColor(android.graphics.Color.BLACK)
-                     text?.textSize = 24f
-                     text?.typeface = android.graphics.Typeface.DEFAULT_BOLD
-                     text?.gravity = android.view.Gravity.CENTER
-                     toast.show()
-                }
+                performUnlock()
             } else {
                 Toast.makeText(this, "访问拒绝，密钥无效。", Toast.LENGTH_SHORT).show()
                 input.setText("")
+                playSfx(sfxAbort)
+            }
+        }
+        
+        btnPay.setOnClickListener {
+            if (spendCoins(cost)) {
+                performUnlock()
+                Toast.makeText(this, "支付成功。赎金已转账。", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "余额不足！需要 $cost ₳", Toast.LENGTH_SHORT).show()
                 playSfx(sfxAbort)
             }
         }
@@ -905,6 +935,21 @@ class MainActivity : Activity(), LogCallback {
                     updateStatus()
                     playSfx(sfxComplete)
                     
+                    // 💰 Reward Logic
+                    val savedDoomsday = prefs.getStringSet("doomsday_list", null) ?: DEFAULT_PROTOCOLS.toSet()
+                    var reward = 1
+                    for (ddTask in savedDoomsday) {
+                        // Loose matching: If task contains the protocol text or vice versa
+                        // (ignoring case and whitespace)
+                        val t1 = task.trim().lowercase()
+                        val t2 = ddTask.trim().lowercase()
+                        if (t1.isNotEmpty() && t2.isNotEmpty() && (t1.contains(t2) || t2.contains(t1))) {
+                            reward = 3
+                            break
+                        }
+                    }
+                    addCoins(reward)
+                    
                     // --- 🎬 Trigger Puzzle Reveal ---
                     if (showPasswordReveal) {
                         handler.postDelayed({
@@ -956,6 +1001,197 @@ class MainActivity : Activity(), LogCallback {
                 logScroll.fullScroll(View.FOCUS_DOWN)
             }
         }
+    }
+
+    // --- 🏛️ ARTIFACT SYSTEM ---
+    data class Artifact(
+        val id: String,
+        val name: String,
+        val iconRes: Int,
+        val detailLayoutRes: Int = 0 // If 0, use generic detail
+    )
+
+    private fun showCyberCodexDialog() {
+        val dialog = android.app.Dialog(this)
+        dialog.setContentView(R.layout.dialog_cyber_codex)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        // Bind Views
+        val btnClose = dialog.findViewById<TextView>(R.id.btnCloseCodex)
+        val btnCollection = dialog.findViewById<TextView>(R.id.btnCollection)
+        val tvTitle = dialog.findViewById<TextView>(R.id.tvCodexTitle)
+        val layoutList = dialog.findViewById<android.widget.LinearLayout>(R.id.layoutCodexList)
+        val layoutGrid = dialog.findViewById<android.widget.GridLayout>(R.id.layoutArtifactGrid)
+
+        // State
+        var isShowcaseMode = false
+
+        fun updateViewMode() {
+            if (isShowcaseMode) {
+                // Show Grid
+                val coins = getCoins()
+                layoutList.visibility = View.GONE
+                layoutGrid.visibility = View.VISIBLE
+                tvTitle.text = "SIGI ASSET VAULT [ CREDITS: $coins ]"
+                btnCollection.text = "☰" // Icon to back to list
+                
+                // POPULATE GRID
+                layoutGrid.removeAllViews()
+                populateArtifactGrid(layoutGrid, dialog)
+            } else {
+                // Show List
+                layoutList.visibility = View.VISIBLE
+                layoutGrid.visibility = View.GONE
+                tvTitle.text = "SIGI CYBER CODEX"
+                btnCollection.text = "◈" // Icon to showcase
+            }
+        }
+
+        // Listeners
+        btnClose.setOnClickListener { dialog.dismiss() }
+        
+        // Debug: Click Title to check unlock statuses
+        tvTitle.setOnClickListener {
+            val prefs = getSharedPreferences("AutoGLMConfig", android.content.Context.MODE_PRIVATE)
+            val hasTicket = prefs.getBoolean("ticket_collected", false)
+            val hasGomoku = prefs.getBoolean("skill_gomoku_unlocked", false)
+            val hasEasy = prefs.getBoolean("permanent_unlock", false)
+            val hasHard = prefs.getBoolean("permanent_unlock_hard", false)
+            
+            val stats = "Ticket:$hasTicket\nGomoku:$hasGomoku\nEasy:$hasEasy\nHard:$hasHard"
+            Toast.makeText(this, stats, Toast.LENGTH_LONG).show()
+        }
+        
+        btnCollection.setOnClickListener {
+            isShowcaseMode = !isShowcaseMode
+            updateViewMode()
+        }
+
+        dialog.show()
+    }
+
+    private fun populateArtifactGrid(grid: android.widget.GridLayout, parentDialog: android.app.Dialog) {
+        val prefs = getSharedPreferences("AutoGLMConfig", android.content.Context.MODE_PRIVATE)
+        
+        // Define ALL Possible Artifacts
+        val artifacts = mutableListOf<Artifact>()
+        
+        // 1. Train Ticket (From Hardcore Puzzle)
+        if (prefs.getBoolean("ticket_collected", false)) {
+            artifacts.add(Artifact("ticket_666", "货号:666", android.R.drawable.ic_menu_agenda))
+        }
+        
+        // 2. Gomoku Skill (Master Note)
+        if (prefs.getBoolean("skill_gomoku_unlocked", false)) {
+            artifacts.add(Artifact("gomoku_master", "技能:五子棋", R.drawable.asset_banknote_dragon))
+        }
+
+        // 3. Zheng Bang Coin (Easy Mode Reward)
+        if (prefs.getBoolean("permanent_unlock", false)) {
+            artifacts.add(Artifact("zheng_bang_coin", "代币:蒸蚌", R.drawable.asset_banknote_cat))
+        }
+
+        // If empty
+        if (artifacts.isEmpty()) {
+            val emptyTv = TextView(this)
+            emptyTv.text = "[ VAULT EMPTY ]"
+            emptyTv.setTextColor(android.graphics.Color.GRAY)
+            emptyTv.typeface = android.graphics.Typeface.MONOSPACE
+            emptyTv.setPadding(32, 32, 32, 32)
+            grid.addView(emptyTv)
+            return
+        }
+
+        // Add Views
+        for (artifact in artifacts) {
+            val itemView = layoutInflater.inflate(R.layout.item_codex_grid, grid, false)
+            val img = itemView.findViewById<android.widget.ImageView>(R.id.artifactIcon)
+            val tv = itemView.findViewById<TextView>(R.id.artifactName)
+            
+            tv.text = artifact.name
+            img.setImageResource(artifact.iconRes)
+            
+            itemView.setOnClickListener {
+                showArtifactDetailDialog(artifact)
+            }
+            
+            // Layout Params for Grid Item
+            val params = android.widget.GridLayout.LayoutParams()
+            params.width = android.widget.GridLayout.LayoutParams.WRAP_CONTENT
+            params.height = android.widget.GridLayout.LayoutParams.WRAP_CONTENT
+            params.setMargins(16, 16, 16, 16)
+            params.columnSpec = android.widget.GridLayout.spec(android.widget.GridLayout.UNDEFINED, 1f) // Weight 1
+            itemView.layoutParams = params
+            
+            grid.addView(itemView)
+        }
+    }
+
+    private fun showArtifactDetailDialog(artifact: Artifact) {
+        val dialog = android.app.Dialog(this)
+        
+        if (artifact.id == "gomoku_master" || artifact.id == "zheng_bang_coin") {
+            // Use common Banknote Layout
+            dialog.setContentView(R.layout.dialog_artifact_detail)
+            
+            val img = dialog.findViewById<android.widget.ImageView>(R.id.detailImage)
+            val overlayContainer = dialog.findViewById<View>(R.id.overlayContainer)
+            val tvLeft = dialog.findViewById<TextView>(R.id.overlayValueLeft)
+            val tvRight = dialog.findViewById<TextView>(R.id.overlayValueRight)
+            val tvName = dialog.findViewById<TextView>(R.id.overlayName)
+            
+            // Set Image
+            if (artifact.id == "gomoku_master") {
+                img.setImageResource(R.drawable.asset_banknote_hardcore)
+                
+                // --- HARDCORE CONFIG (Dragon) ---
+                overlayContainer.visibility = View.VISIBLE
+                tvLeft.visibility = View.VISIBLE
+                tvRight.visibility = View.VISIBLE
+                tvLeft.text = "100"
+                tvRight.text = "100"
+                
+                tvName.visibility = View.VISIBLE
+                tvName.text = " 梆 梆 "  // Bang Bang
+                
+            } else {
+                img.setImageResource(R.drawable.asset_banknote_cat)
+                
+                // --- EASY CONFIG (Cat) ---
+                overlayContainer.visibility = View.VISIBLE
+                
+                // Hide numbers (Original 50 is fine)
+                tvLeft.visibility = View.GONE
+                tvRight.visibility = View.GONE
+                
+                // Fix Bottom Name
+                tvName.visibility = View.VISIBLE
+                tvName.text = " 蒸 蚌 " // Zheng Bang
+            }
+            
+        } else if (artifact.id == "ticket_666") {
+            // Reuse the Train Ticket Dialog for viewing
+            dialog.setContentView(R.layout.dialog_train_ticket)
+            val btn = dialog.findViewById<android.widget.Button>(R.id.btnCollectTicket)
+            btn.text = "[ ARCHIVED ]"
+            btn.isEnabled = false
+        } else {
+            // Fallback generic
+             return
+        }
+        
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        
+        // Make full screen-ish
+        val width = (resources.displayMetrics.widthPixels * 0.95).toInt()
+        dialog.window?.setLayout(width, android.view.ViewGroup.LayoutParams.WRAP_CONTENT)
+        
+        // Click to close
+        dialog.findViewById<View>(android.R.id.content).setOnClickListener {
+            dialog.dismiss()
+        }
+        
+        dialog.show()
     }
 
     private fun playPixelTitleAnimation() {
@@ -1017,5 +1253,34 @@ class MainActivity : Activity(), LogCallback {
         if (isSfxEnabled && soundId != 0) {
             soundPool.play(soundId, 1.0f, 1.0f, 1, 0, 1.0f)
         }
+    }
+
+    // --- 💰 TOKEN ECONOMY SYSTEM ---
+    private fun getCoins(): Int {
+        val prefs = getSharedPreferences("AutoGLMConfig", android.content.Context.MODE_PRIVATE)
+        return prefs.getInt("agent_coins", 0)
+    }
+
+    private fun addCoins(amount: Int) {
+        val prefs = getSharedPreferences("AutoGLMConfig", android.content.Context.MODE_PRIVATE)
+        val current = getCoins()
+        val newBalance = current + amount
+        prefs.edit().putInt("agent_coins", newBalance).apply()
+        
+        // Visual Feedback
+        runOnUiThread {
+             Toast.makeText(this, "获得奖励: +$amount (当前余额: $newBalance)", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun spendCoins(amount: Int): Boolean {
+        val prefs = getSharedPreferences("AutoGLMConfig", android.content.Context.MODE_PRIVATE)
+        val current = getCoins()
+        if (current >= amount) {
+            val newBalance = current - amount
+            prefs.edit().putInt("agent_coins", newBalance).apply()
+            return true
+        }
+        return false
     }
 }

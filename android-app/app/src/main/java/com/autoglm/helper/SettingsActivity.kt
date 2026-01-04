@@ -473,40 +473,195 @@ class SettingsActivity : Activity() {
         }
         // Toast removed for auto-save to allow silent saving
     }
+    // --- 🏛️ ARTIFACT SYSTEM (Mirrored from MainActivity) ---
+    data class Artifact(
+        val id: String,
+        val name: String,
+        val iconRes: Int
+    )
+    
+    private fun getCoins(): Int {
+        val prefs = getSharedPreferences("AutoGLMConfig", Context.MODE_PRIVATE)
+        return prefs.getInt("agent_coins", 0)
+    }
+
     private fun showCyberCodexDialog() {
-         val dialog = android.app.Dialog(this)
-         dialog.setContentView(R.layout.dialog_cyber_codex)
-         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-         
-         // Close Logic
-         dialog.findViewById<android.view.View>(R.id.btnCloseCodex)?.setOnClickListener {
-             dialog.dismiss()
-         }
-         
-         // Collection Logic
-         val prefs = getSharedPreferences("AutoGLMConfig", Context.MODE_PRIVATE)
-         val btnCollection = dialog.findViewById<android.view.View>(R.id.btnCollection)
-         
-         btnCollection?.setOnClickListener {
-             // Visual Feedback
-             it.animate().scaleX(0.8f).scaleY(0.8f).withEndAction {
-                 it.animate().scaleX(1f).scaleY(1f).start()
-             }.start()
-             
-             val isCollected = prefs.getBoolean("ticket_collected", false)
-             if (isCollected) {
-                 val ticketDialog = android.app.Dialog(this)
-                 ticketDialog.setContentView(R.layout.dialog_train_ticket)
-                 ticketDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-                 // Hide Collect Button in view-only mode
-                 ticketDialog.findViewById<android.view.View>(R.id.btnCollectTicket)?.visibility = android.view.View.GONE
-                 ticketDialog.show()
-             } else {
-                 android.widget.Toast.makeText(this, "收藏夹为空 [EMPTY]", android.widget.Toast.LENGTH_SHORT).show()
-             }
-         }
-         
-         dialog.show()
+        val dialog = android.app.Dialog(this)
+        dialog.setContentView(R.layout.dialog_cyber_codex)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        // Bind Views
+        val btnClose = dialog.findViewById<android.widget.TextView>(R.id.btnCloseCodex)
+        val btnCollection = dialog.findViewById<android.widget.TextView>(R.id.btnCollection)
+        val tvTitle = dialog.findViewById<android.widget.TextView>(R.id.tvCodexTitle)
+        val layoutList = dialog.findViewById<android.widget.LinearLayout>(R.id.layoutCodexList)
+        val layoutGrid = dialog.findViewById<android.widget.GridLayout>(R.id.layoutArtifactGrid)
+
+        // State
+        var isShowcaseMode = false
+
+        fun updateViewMode() {
+            if (isShowcaseMode) {
+                // Show Grid
+                val coins = getCoins()
+                layoutList.visibility = android.view.View.GONE
+                layoutGrid.visibility = android.view.View.VISIBLE
+                tvTitle.text = "SIGI ASSET VAULT [ CREDITS: $coins ]"
+                btnCollection.text = "☰" // Icon to back to list
+                
+                // POPULATE GRID
+                layoutGrid.removeAllViews()
+                populateArtifactGrid(layoutGrid)
+            } else {
+                // Show List
+                layoutList.visibility = android.view.View.VISIBLE
+                layoutGrid.visibility = android.view.View.GONE
+                tvTitle.text = "SIGI CYBER CODEX"
+                btnCollection.text = "◈" // Icon to showcase
+            }
+        }
+
+        // Listeners
+        btnClose.setOnClickListener { dialog.dismiss() }
+        
+        // Debug: Click Title to check unlock statuses
+        tvTitle.setOnClickListener {
+            val prefs = getSharedPreferences("AutoGLMConfig", Context.MODE_PRIVATE)
+            val hasTicket = prefs.getBoolean("ticket_collected", false)
+            val hasGomoku = prefs.getBoolean("skill_gomoku_unlocked", false)
+            val hasEasy = prefs.getBoolean("permanent_unlock", false)
+            val hasHard = prefs.getBoolean("permanent_unlock_hard", false)
+            
+            val stats = "Ticket: $hasTicket | Gomoku: $hasGomoku | Easy: $hasEasy"
+            android.widget.Toast.makeText(this, stats, android.widget.Toast.LENGTH_LONG).show()
+        }
+        
+        btnCollection.setOnClickListener {
+            isShowcaseMode = !isShowcaseMode
+            updateViewMode()
+        }
+
+        dialog.show()
+    }
+
+    private fun populateArtifactGrid(grid: android.widget.GridLayout) {
+        val prefs = getSharedPreferences("AutoGLMConfig", Context.MODE_PRIVATE)
+        
+        // Define ALL Possible Artifacts
+        val artifacts = mutableListOf<Artifact>()
+        
+        // 1. Train Ticket (From Hardcore Puzzle)
+        if (prefs.getBoolean("ticket_collected", false)) {
+            artifacts.add(Artifact("ticket_666", "货号:666", android.R.drawable.ic_menu_recent_history))
+        }
+        
+        // 2. Gomoku Skill (Master Note - Hardcore)
+        if (prefs.getBoolean("skill_gomoku_unlocked", false)) {
+            artifacts.add(Artifact("gomoku_master", "牛爷爷", R.drawable.asset_banknote_hardcore))
+        }
+
+        // 3. Zheng Bang Coin (Easy Mode Reward)
+        if (prefs.getBoolean("permanent_unlock", false)) {
+            artifacts.add(Artifact("zheng_bang_coin", "蒸蚌", R.drawable.asset_banknote_cat))
+        }
+
+        // If empty
+        if (artifacts.isEmpty()) {
+            val emptyTv = android.widget.TextView(this)
+            emptyTv.text = "[ VAULT EMPTY ]"
+            emptyTv.setTextColor(android.graphics.Color.GRAY)
+            emptyTv.typeface = android.graphics.Typeface.MONOSPACE
+            emptyTv.setPadding(32, 32, 32, 32)
+            grid.addView(emptyTv)
+            return
+        }
+
+        // Add Views
+        for (artifact in artifacts) {
+            val itemView = layoutInflater.inflate(R.layout.item_codex_grid, grid, false)
+            val img = itemView.findViewById<android.widget.ImageView>(R.id.artifactIcon)
+            val tv = itemView.findViewById<android.widget.TextView>(R.id.artifactName)
+            
+            tv.text = artifact.name
+            img.setImageResource(artifact.iconRes)
+            
+            itemView.setOnClickListener {
+                showArtifactDetailDialog(artifact)
+            }
+            
+            // Just add view, let XML handle size (fixed 100dp width in XML)
+            // Or simple margin if needed
+            val params = android.widget.GridLayout.LayoutParams()
+            params.setMargins(24, 24, 24, 24)
+            // params.columnSpec =  android.widget.GridLayout.spec(android.widget.GridLayout.UNDEFINED, 1f) // REMOVED WEIGHT
+            itemView.layoutParams = params
+            
+            grid.addView(itemView)
+        }
+    }
+
+    private fun showArtifactDetailDialog(artifact: Artifact) {
+        val dialog = android.app.Dialog(this)
+        
+        if (artifact.id == "gomoku_master" || artifact.id == "zheng_bang_coin") {
+            // Use common Banknote Layout
+            dialog.setContentView(R.layout.dialog_artifact_detail)
+            
+            val img = dialog.findViewById<android.widget.ImageView>(R.id.detailImage)
+            val overlayContainer = dialog.findViewById<android.view.View>(R.id.overlayContainer)
+            val tvLeft = dialog.findViewById<android.widget.TextView>(R.id.overlayValueLeft)
+            val tvRight = dialog.findViewById<android.widget.TextView>(R.id.overlayValueRight)
+            val tvName = dialog.findViewById<android.widget.TextView>(R.id.overlayName)
+            
+            // Set Image
+            if (artifact.id == "gomoku_master") {
+                img.setImageResource(R.drawable.asset_banknote_hardcore)
+                
+                // --- HARDCORE CONFIG (Dragon) ---
+                overlayContainer.visibility = android.view.View.VISIBLE
+                tvLeft.visibility = android.view.View.VISIBLE
+                tvRight.visibility = android.view.View.VISIBLE
+                tvLeft.text = "100"
+                tvRight.text = "100"
+                
+                tvName.visibility = android.view.View.VISIBLE
+                tvName.text = " 梆 梆 "  // Bang Bang
+                
+            } else {
+                img.setImageResource(R.drawable.asset_banknote_cat)
+                
+                // --- EASY CONFIG (Cat) ---
+                // User requested: NO overlay, show original image only
+                overlayContainer.visibility = android.view.View.GONE
+            }
+            
+        } else if (artifact.id == "ticket_666") {
+            // Reuse the Train Ticket Dialog for viewing
+            dialog.setContentView(R.layout.dialog_train_ticket)
+            val btn = dialog.findViewById<android.widget.Button>(R.id.btnCollectTicket)
+            btn.text = "[ ARCHIVED ]"
+            btn.isEnabled = false
+        } else {
+            // Fallback generic
+             return
+        }
+        
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        
+        // Make full screen-ish (responsive to orientation)
+        val metrics = resources.displayMetrics
+        val width = (metrics.widthPixels * 0.95).toInt()
+        val maxHeight = (metrics.heightPixels * 0.8).toInt()
+        dialog.window?.setLayout(width, android.view.ViewGroup.LayoutParams.WRAP_CONTENT)
+        
+        dialog.setCanceledOnTouchOutside(true)
+        
+        // Click anywhere to close
+        dialog.findViewById<android.view.View>(android.R.id.content)?.setOnClickListener {
+            dialog.dismiss()
+        }
+        
+        dialog.show()
     }
 
     private fun startStarSignal() {

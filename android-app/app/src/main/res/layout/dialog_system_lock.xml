@@ -50,7 +50,45 @@
         android:inputType="numberPassword"
         android:maxLength="4"
         android:padding="12dp"
-        android:layout_marginBottom="24dp" />
+        android:layout_marginBottom="16dp" />
+
+    <!-- Ransom Section -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="- OR PAY RANSOM -"
+        android:textColor="#55FFFFFF"
+        android:textSize="10sp"
+        android:fontFamily="monospace"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="8dp" />
+
+    <Button
+        android:id="@+id/btnPayRansom"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="UNBLOCK [ 66 ₳ ]"
+        android:textColor="#000000"
+        android:backgroundTint="#FFD700"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp" />
+        
+    <TextView
+        android:id="@+id/tvRansomBalance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="BALANCE: 0 ₳"
+        android:textColor="#FFD700"
+        android:textSize="12sp"
+        android:fontFamily="monospace"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp" />
+        
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#33FFFFFF"
+        android:layout_marginBottom="16dp"/>
 
     <Button
         android:id="@+id/btnUnlock"

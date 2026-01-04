@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="100dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="8dp"
+    android:background="?android:attr/selectableItemBackground">
+
+    <!-- The Artifact Container -->
+    <FrameLayout
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:background="#2200E676"
+        android:padding="2dp">
+        
+        <!-- Border -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/tech_input_border"
+            android:alpha="0.5"/>
+
+        <!-- The Artifact Icon -->
+        <ImageView
+            android:id="@+id/artifactIcon"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"
+            android:src="@drawable/asset_banknote_dragon"
+            android:padding="8dp"/>
+            
+    </FrameLayout>
+
+    <!-- Artifact Label -->
+    <TextView
+        android:id="@+id/artifactName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ITEM NAME"
+        android:fontFamily="@font/vt323_regular"
+        android:textColor="@color/terminal_green"
+        android:textSize="12sp"
+        android:gravity="center"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:layout_marginTop="4dp"/>
+
+</LinearLayout>
