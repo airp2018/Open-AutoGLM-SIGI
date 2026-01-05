@@ -120,7 +120,7 @@ Open-AutoGLM-SIGI/
 │   └── app/src/main/java/     # 🟡 Android 原生层 (Native Layer)
 │       ├── AutoGLMAccessibilityService.kt # 无障碍服务 (感知+点击)
 │       └── MainActivity.kt    # 赛博朋克 UI 容器
-├── SIGI_Deployment_Kit/   # 🟣 一键部署工具包 (ADB/脚本)
+├── 📦 部署包请从 Releases 下载
 └── docs/                  # 文档与资源
 ```
 

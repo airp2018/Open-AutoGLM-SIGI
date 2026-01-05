@@ -120,7 +120,7 @@ Open-AutoGLM-SIGI/
 │   └── app/src/main/java/     # 🟡 Android Native Layer
 │       ├── AutoGLMAccessibilityService.kt # Perception & Action
 │       └── MainActivity.kt    # UI Container
-├── SIGI_Deployment_Kit/   # 🟣 Deployment Kit
+├── 📦 Download Deployment Kit from Releases
 └── docs/                  # Documentation
 ```
 
