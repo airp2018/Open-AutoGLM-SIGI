@@ -22,10 +22,7 @@
   <img src="android-app/app/src/main/res/drawable/stamp_apology_jp.png" width="20%" />
   <img src="android-app/app/src/main/res/drawable/stamp_apology_it.png" width="20%" />
 </p>
-> *   **8国道歉天团**: 随机掉落 8 张不同国家 (🇯🇵 🇨🇳 🇺🇸 🇬🇧 🇫🇷 🇩🇪 🇮🇹 🇮🇳) 的精美复古邮票。
-> *   **智能收藏**: 系统优先发放未收集的邮票；集齐后自动堆叠数量 (例如 "China x2")。
-> *   **积分补偿**: 每次延误，无论获得何种邮票，均补偿 **+5 积分**。
-> *   **资产金库**: 所有获得的道歉券均可在 `Settings -> Asset Vault` 中查看。
+
 
 ## 🌟 SIGI v3.1: AGENT 经济系统上线
 

@@ -23,10 +23,7 @@
   <img src="android-app/app/src/main/res/drawable/stamp_apology_it.png" width="20%" />
 </p>
 
-> *   **8 Nations Tour**: Randomly drops 8 different apology stamps (🇯🇵 🇨🇳 🇺🇸 🇬🇧 🇫🇷 🇩🇪 🇮🇹 🇮🇳) styled as vintage stamps.
-> *   **Smart Collecting**: Prioritizes uncollected stamps; stacks duplicates (e.g., "China x2") once collected.
-> *   **Compensation**: Every delay awards **+5 Credits**, regardless of the stamp type.
-> *   **Asset Vault**: View all collected tokens in `Settings -> Asset Vault`.
+
 
 ## 🌟 SIGI v3.1: Agent Economic System Launched
 
