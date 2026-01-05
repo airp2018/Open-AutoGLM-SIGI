@@ -28,6 +28,16 @@
 > *   **Compensation**: Every delay awards **+5 Credits**, regardless of the stamp type.
 > *   **Asset Vault**: View all collected tokens in `Settings -> Asset Vault`.
 
+## 🌟 SIGI v3.1: Agent Economic System Launched
+
+> **SIGI v3.1: In version 3.1, we introduced the concept of "Agent Involvement in Virtual Economy" for the first time. By collaborating with the Agent, you can accumulate credits and issue two types of game tokens. In the future, these community tokens will be exchangeable for real creative services. Stay tuned.**
+
+<p align="center">
+  <img src="android-app/app/src/main/res/drawable/asset_banknote_hardcore.png" width="48%" />
+  <img src="android-app/app/src/main/res/drawable/asset_banknote_cat.png" width="48%" />
+</p>
+
+
 > **"This is the way the world ends. Not with a bang but a whimper."**
 > — *T.S. Eliot, The Hollow Men*
 
