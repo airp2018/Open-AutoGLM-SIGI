@@ -98,14 +98,14 @@ SIGI 的灵感源自 **《三体》 (The Three-Body Problem)** 与 **古典赛�
 
 我们对开源的 Open-AutoGLM 进行了 **降维打击** 级别的重构。
 
-*   **Old Way (竞品)**: 需要电脑 + Termux + Python环境 + 复杂的双进程通信。此时你的手机发烫、卡顿、容易崩溃。
+*   **Old Way (竞品)**: 需要安装 Termux + 配置 Python 环境 + 复杂的双进程通信。手机发烫、卡顿、容易崩溃。
 *   **SIGI Way (本方案)**: **单进程混合架构 (Single-Process Hybrid)**。Python 智能体直接植入 Android 核心。
 
-| 特性 (Feature) | 传统方案 (Legacy) | SIGI (Next-Gen) |
+| 特性 (Feature) | Termux 方案 | SIGI (Next-Gen) |
 | :--- | :--- | :--- |
 | **部署难度** | 🛑 极难 (需 Termux/命令行) | ✅ **极简 (一键安装 APK)** |
 | **响应速度** | 🐢 慢 (~500ms 延迟) | ⚡ **光速 (~3ms 进程内直通)** |
-| **无需电脑** | ❌ 必须连接电脑配置 | ✅ **完全脱离电脑运行** |
+| **稳定性** | 🔥 手机发热、易崩溃 | ✅ **稳定流畅、低功耗** |
 | **体验** | 📟 枯燥的命令行 | 🎮 **沉浸式赛博游戏体验** |
 
 ### 05. 技术架构与目录 (Architecture)

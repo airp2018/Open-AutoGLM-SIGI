@@ -98,14 +98,14 @@ We embedded narratives into the most basic command list. Each preset command is 
 
 We refactored the open-source Open-AutoGLM with a **"Dimensional Strike"** level of reconstruction.
 
-*   **Old Way (Competitors)**: Requires a PC + Termux + Python environment + complex dual-process communication. Your phone would overheat, lag, and crash easily.
+*   **Old Way (Competitors)**: Requires installing Termux + configuring Python environment + complex dual-process communication. Phone overheats, lags, and crashes easily.
 *   **SIGI Way (This Solution)**: **Single-Process Hybrid Architecture**. The Python agent is directly embedded into the Android core.
 
-| Feature | Legacy Way | SIGI (Next-Gen) |
+| Feature | Termux Solution | SIGI (Next-Gen) |
 | :--- | :--- | :--- |
 | **Deployment Difficulty** | 🛑 Extremely Hard (Requires Termux/CLI) | ✅ **Extremely Simple (One-click APK install)** |
 | **Response Speed** | 🐢 Slow (~500ms latency) | ⚡ **Light Speed (~3ms in-process direct)** |
-| **No PC Required** | ❌ Must connect to PC for configuration | ✅ **Runs completely without a PC** |
+| **Stability** | 🔥 Overheating, prone to crashes | ✅ **Stable, smooth, low power** |
 | **Experience** | 📟 Dry command line | 🎮 **Immersive Cyberpunk gaming experience** |
 
 ### 05. Technical Architecture
