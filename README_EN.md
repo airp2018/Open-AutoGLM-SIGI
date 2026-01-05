@@ -84,13 +84,13 @@ We reject cold, utilitarian tools. **"He who captures emotions, captures the use
 
 We predict that AI products will shift from function-driven to an era dominated by **Emotional Consumption**. SIGI provides a space for "mood consumption"—here, your phone is no longer just a tool, but a vessel for your emotions.
 
-#### 01. The Doomsday Protocols
+#### The Doomsday Protocols
 We embedded narratives into the most basic command list. Each preset command is a micro-story fragment about love, parting, survival, and desire:
 *   *"Oh, darling, open Weibo and post: Goodbye, my love"*
 *   *"Winter is coming, buy 2 portions of spicy chicken wings"*
 *   *"Open Trip.com... I don't want to die at home"*
 
-#### 02. Escape Room Aesthetic
+#### Escape Room Aesthetic
 *   **Atmosphere**: The interface uses `Terminal Green (#00E676)` paired with `Deep Space Black (#0A1929)`, simulating a secret terminal from the Cold War era.
 *   **Metaphor**: The interaction on the settings page is a "secret door." Just like finding a mechanism in an escape room, you need to find clues for the key within the page to reveal the "Higher Dimensional" truth hidden beneath the surface.
 
