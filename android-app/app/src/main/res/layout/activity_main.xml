@@ -68,34 +68,34 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
     
-            <!-- Accessibility Settings Link - Just above input -->
+            <!-- Accessibility Settings Link -->
             <TextView
                 android:id="@+id/openSettingsButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="打开无障碍权限"
+                android:text="⚡"
                 android:fontFamily="@font/vt323_regular"
                 android:textColor="@color/terminal_green"
-                android:textSize="10sp"
-                android:clickable="true"
-                android:focusable="true"
-                android:background="?android:attr/selectableItemBackground"
-                android:layout_marginBottom="4dp"
-                android:layout_weight="1" />
-    
-            <!-- 2. Doomsday List Toggle (Parallel to Accessibility) -->
-            <TextView
-                android:id="@+id/btnDoomsdayList"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="DOOMSDAY LIST"
-                android:fontFamily="@font/vt323_regular"
-                android:textColor="@color/terminal_green"
-                android:textSize="12sp"
+                android:textSize="18sp"
                 android:clickable="true"
                 android:focusable="true"
                 android:background="?android:attr/selectableItemBackground"
                 android:layout_marginBottom="4dp" />
+    
+            <!-- 2. Doomsday List (Scroll Symbol) -->
+            <TextView
+                android:id="@+id/btnDoomsdayList"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📜"
+                android:fontFamily="@font/vt323_regular"
+                android:textColor="@color/terminal_green"
+                android:textSize="18sp"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?android:attr/selectableItemBackground"
+                android:layout_marginBottom="4dp"
+                android:layout_marginStart="16dp" />
 
             <!-- 3. Agent Adventure (Money Bag) -->
             <TextView
@@ -105,13 +105,28 @@
                 android:text="💰"
                 android:fontFamily="@font/vt323_regular"
                 android:textColor="#FFD700"
-                android:textSize="12sp"
+                android:textSize="18sp"
                 android:clickable="true"
                 android:focusable="true"
                 android:textStyle="bold"
                 android:background="?android:attr/selectableItemBackground"
                 android:layout_marginBottom="4dp"
-                android:layout_marginStart="12dp" />
+                android:layout_marginStart="16dp" />
+
+            <!-- 4. Cyber Market Portal (Minimalist) -->
+            <TextView
+                android:id="@+id/btnCyberMarket"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🪐"
+                android:fontFamily="@font/vt323_regular"
+                android:textColor="#FFFFFF" 
+                android:textSize="18sp"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?android:attr/selectableItemBackground"
+                android:layout_marginBottom="4dp"
+                android:layout_marginStart="16dp" />
                 
             </LinearLayout> 
             <!-- End of Label Row -->

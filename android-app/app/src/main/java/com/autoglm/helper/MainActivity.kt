@@ -233,6 +233,13 @@ class MainActivity : Activity(), LogCallback {
             playSfx(sfxClick)
             showAgentAdventureDialog()
         }
+
+        // --- 🪐 Cyber Market Logic ---
+        val btnCyberMarket = findViewById<TextView>(R.id.btnCyberMarket)
+        btnCyberMarket.setOnClickListener {
+            playSfx(sfxClick)
+            showCyberMarketDialog()
+        }
         
         btnAddTask.setOnClickListener {
             val task = taskInput.text.toString().trim()
@@ -544,6 +551,60 @@ class MainActivity : Activity(), LogCallback {
     }
     
 
+
+    // --- 🪐 CYBER MARKET SYSTEM ---
+    data class MarketItem(
+        val id: String,
+        val icon: String,
+        val title: String, 
+        val desc: String, 
+        val seller: String, 
+        val contact: String,
+        val price: Int,
+        val type: String // "PROMPT", "CONTRACT", "DATA"
+    )
+
+    private fun showCyberMarketDialog() {
+        val dialog = android.app.Dialog(this)
+        dialog.setContentView(R.layout.dialog_cyber_market)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        
+        // 1. Initialize Balance Display
+        val tvBalance = dialog.findViewById<TextView>(R.id.marketUserBalance)
+        tvBalance.text = "BAL: ${getCoins()}"
+
+        // UI Elements
+        val detailOverlay = dialog.findViewById<android.view.View>(R.id.detailOverlay)
+        val btnBack = dialog.findViewById<Button>(R.id.btnRentAction)
+        
+        // 2. Click Logic for ALL Nodes (Unified "For Rent" Logic)
+        val signalNodes = listOf(
+            R.id.signalNode1, R.id.signalNode2, R.id.signalNode3,
+            R.id.signalNode4, R.id.signalNode5, R.id.signalNode6
+        )
+        
+        for (nodeId in signalNodes) {
+             dialog.findViewById<android.view.View>(nodeId).setOnClickListener {
+                 playSfx(sfxClick)
+                 // Show "For Rent" Overlay
+                 detailOverlay.visibility = android.view.View.VISIBLE
+             }
+        }
+        
+        // Back Button in Overlay
+        btnBack.setOnClickListener {
+            playSfx(sfxAbort)
+            detailOverlay.visibility = android.view.View.GONE
+        }
+
+        // Close Dialog Logic
+        dialog.findViewById<android.view.View>(R.id.btnCloseMarket).setOnClickListener {
+            playSfx(sfxClick)
+            dialog.dismiss()
+        }
+        
+        dialog.show()
+    }
 
     // --- 📜 RULES SYSTEM ---
     private fun showRulesDialog() {

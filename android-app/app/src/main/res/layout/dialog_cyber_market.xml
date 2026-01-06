@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="340dp"
+    android:layout_height="520dp"
+    android:background="@drawable/bg_cyber_parchment">
+
+    <!-- 1. Dynamic Background Effect -->
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@android:drawable/screen_background_dark"
+        android:alpha="0.8" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- HEADER: System Status -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="12dp">
+            
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="> SYSTEM: BLACK_MARKET_LINK"
+                android:fontFamily="monospace"
+                android:textColor="#FF5252"
+                android:textSize="10sp"
+                android:letterSpacing="0.1" />
+
+            <TextView
+                android:id="@+id/marketUserBalance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="BAL: 0000"
+                android:fontFamily="monospace"
+                android:textColor="#FFD700"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- TITLE: SIGI Cyber Exchange -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="SIGI 赛博交易所"
+            android:fontFamily="monospace"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginBottom="4dp" />
+        
+        <!-- INTRO: The Black Store Manifesto -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="这里是赛博宇宙的尽头。\n用你手上的代币，置换所需服务。\n交易所收取10%的手续费。\n我们是很黑，你能怎么嘛。"
+            android:fontFamily="monospace"
+            android:textColor="#88FFFFFF"
+            android:textSize="11sp"
+            android:gravity="center"
+            android:layout_marginBottom="24dp"
+            android:lineSpacingMultiplier="1.2" />
+
+        <!-- THE SIGNAL GRID (3 Columns) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+
+            <!-- ROW 1: Visual Symbols -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginBottom="12dp">
+                
+                <!-- Item 1: Sword -->
+                <TextView
+                    android:id="@+id/signalNode1"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/bg_hacker_border"
+                    android:text="⚔️"
+                    android:textSize="28sp"
+                    android:gravity="center"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:layout_marginEnd="16dp" />
+                
+                <!-- Item 2: Unicorn -->
+                <TextView
+                    android:id="@+id/signalNode2"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/bg_hacker_border"
+                    android:text="🦄"
+                    android:textSize="28sp"
+                    android:gravity="center"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:layout_marginEnd="16dp" />
+
+                <!-- Item 3: Demon Mask -->
+                <TextView
+                    android:id="@+id/signalNode3"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/bg_hacker_border"
+                    android:text="👺"
+                    android:textSize="28sp"
+                    android:gravity="center"
+                    android:clickable="true"
+                    android:focusable="true" />
+            </LinearLayout>
+
+            <!-- ROW 2: More Symbols -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginBottom="12dp">
+                
+                <!-- Item 4: Dragon -->
+                <TextView
+                    android:id="@+id/signalNode4"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/bg_hacker_border"
+                    android:text="🐲"
+                    android:textSize="28sp"
+                    android:gravity="center"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:layout_marginEnd="16dp" />
+                
+                <!-- Item 5: Evil Eye -->
+                <TextView
+                    android:id="@+id/signalNode5"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/bg_hacker_border"
+                    android:text="🧿"
+                    android:textSize="28sp"
+                    android:gravity="center"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:layout_marginEnd="16dp" />
+
+                <!-- Item 6: Tornado -->
+                <TextView
+                    android:id="@+id/signalNode6"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/bg_hacker_border"
+                    android:text="🌪️"
+                    android:textSize="28sp"
+                    android:gravity="center"
+                    android:clickable="true"
+                    android:focusable="true" />
+            </LinearLayout>
+
+             <TextView
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:text="... 虚位以待，等待信号接入 ..."
+                 android:fontFamily="monospace"
+                 android:textSize="10sp"
+                 android:textColor="#44FFFFFF"
+                 android:layout_marginTop="24dp" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnCloseMarket"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:text="[ 离开交易所 ]"
+            android:fontFamily="monospace"
+            android:textColor="#AAAAAA"
+            android:textSize="12sp"
+            android:background="@android:color/transparent"/>
+
+    </LinearLayout>
+
+    <!-- === DETAIL OVERLAY (For Rent) === -->
+    <LinearLayout
+        android:id="@+id/detailOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="#FF111111"
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:visibility="gone"
+        android:elevation="10dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="> ⚠️ 空置节点 (VOID NODE)"
+            android:fontFamily="monospace"
+            android:textColor="#FF5252"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="该信号频段目前空闲。\n\n[ 旺铺招租 ]\n\n如果你拥有特殊技能（Code/Design/Write），并希望在此接入你的信号，请联系管理员。"
+            android:fontFamily="monospace"
+            android:textColor="#CCCCCC"
+            android:textSize="12sp"
+            android:layout_marginBottom="16dp"
+            android:lineSpacingMultiplier="1.2" />
+
+        <Button
+            android:id="@+id/btnRentAction"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="我不配 (BACK)"
+            android:fontFamily="monospace"
+            android:textColor="#000000"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:backgroundTint="#AAAAAA"
+            android:stateListAnimator="@null" />
+            
+    </LinearLayout>
+
+</FrameLayout>
