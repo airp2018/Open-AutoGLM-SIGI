@@ -96,6 +96,22 @@
                 android:focusable="true"
                 android:background="?android:attr/selectableItemBackground"
                 android:layout_marginBottom="4dp" />
+
+            <!-- 3. Agent Adventure (Money Bag) -->
+            <TextView
+                android:id="@+id/btnAgentAdventure"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="💰"
+                android:fontFamily="@font/vt323_regular"
+                android:textColor="#FFD700"
+                android:textSize="12sp"
+                android:clickable="true"
+                android:focusable="true"
+                android:textStyle="bold"
+                android:background="?android:attr/selectableItemBackground"
+                android:layout_marginBottom="4dp"
+                android:layout_marginStart="12dp" />
                 
             </LinearLayout> 
             <!-- End of Label Row -->

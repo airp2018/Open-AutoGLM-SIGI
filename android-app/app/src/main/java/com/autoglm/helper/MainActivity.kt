@@ -227,6 +227,13 @@ class MainActivity : Activity(), LogCallback {
             showDoomsdayListDialog() 
         }
         
+        // --- 💰 Agent Adventure Logic ---
+        val btnAgentAdventure = findViewById<TextView>(R.id.btnAgentAdventure)
+        btnAgentAdventure.setOnClickListener {
+            playSfx(sfxClick)
+            showAgentAdventureDialog()
+        }
+        
         btnAddTask.setOnClickListener {
             val task = taskInput.text.toString().trim()
             if (task.isNotEmpty()) {
@@ -416,7 +423,7 @@ class MainActivity : Activity(), LogCallback {
         val tvBalance = dialog.findViewById<TextView>(R.id.tvDoomsdayBalance)
         
         // Show Balance
-        tvBalance.text = "CREDITS: ${getCoins()}"
+        tvBalance.text = "${getCoins()} 💰"
         
         // Load List
         val prefs = getSharedPreferences("AutoGLMConfig", android.content.Context.MODE_PRIVATE)
@@ -439,15 +446,29 @@ class MainActivity : Activity(), LogCallback {
             tv.typeface = typeFace // VT323
             tv.letterSpacing = 0.05f // Slight spacing for readability
             
+            // Reward Indicator (Separate TextView on right)
+            val rowLayout = android.widget.LinearLayout(this)
+            rowLayout.orientation = android.widget.LinearLayout.HORIZONTAL
+            
+            val tvReward = TextView(this)
+            tvReward.text = "+3 💰"
+            tvReward.setTextColor(android.graphics.Color.parseColor("#FFD700"))
+            tvReward.textSize = 12f
+            tvReward.typeface = typeFace
+            
+            tv.layoutParams = android.widget.LinearLayout.LayoutParams(0, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+            rowLayout.addView(tv)
+            rowLayout.addView(tvReward)
+            
             // Add click listener to fill input
-            tv.setOnClickListener {
+            rowLayout.setOnClickListener {
                 taskInput.setText(protocol)
                 taskInput.setSelection(taskInput.text.length) // Move cursor to end
                 dialog.dismiss()
             }
             
             // Add Long Click to Delete
-            tv.setOnLongClickListener {
+            rowLayout.setOnLongClickListener {
                 android.app.AlertDialog.Builder(this)
                     .setTitle("DELETE PROTOCOL?")
                     .setMessage(protocol)
@@ -465,9 +486,9 @@ class MainActivity : Activity(), LogCallback {
             // Add hover/press effect via background
             val outValue = android.util.TypedValue()
             theme.resolveAttribute(android.R.attr.selectableItemBackground, outValue, true)
-            tv.setBackgroundResource(outValue.resourceId)
+            rowLayout.setBackgroundResource(outValue.resourceId)
             
-            listContainer.addView(tv)
+            listContainer.addView(rowLayout)
             
              // Divider
             val divider = View(this)
@@ -482,6 +503,47 @@ class MainActivity : Activity(), LogCallback {
         
         dialog.show()
     }
+
+    private fun showAgentAdventureDialog() {
+        val dialog = android.app.Dialog(this)
+        dialog.setContentView(R.layout.dialog_agent_adventure)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        
+        // Setup Close Button
+        dialog.findViewById<Button>(R.id.btnCancel).setOnClickListener {
+            playSfx(sfxClick)
+            dialog.dismiss()
+        }
+        
+        // Helper to setup mission item
+        fun setupMission(id: Int, prompt: String, reward: Int) {
+            val itemView = dialog.findViewById<android.view.View>(id)
+            if (itemView != null) {
+                itemView.setOnClickListener {
+                    playSfx(sfxClick)
+                    taskInput.setText(prompt)
+                    taskInput.setSelection(taskInput.text.length)
+                    
+                    // Save pending reward for later (when task completes)
+                    val prefs = getSharedPreferences("AutoGLMConfig", android.content.Context.MODE_PRIVATE)
+                    prefs.edit().putInt("pending_adventure_reward", reward).apply()
+                    
+                    Toast.makeText(this, "任务已接受 (完成可获 +$reward 💰)", Toast.LENGTH_SHORT).show()
+                    dialog.dismiss()
+                }
+            }
+        }
+        
+        setupMission(R.id.missionXhs, "打开小红书，给前任的账号：XXX 最新一条笔记，写条评论：我还在想你。", 100)
+        setupMission(R.id.missionWeibo, "打开微博，发一条：今夜，我是一个混蛋。", 50)
+        setupMission(R.id.missionTaobao, "打开淘宝，搜索助农水果，购买第一条搜索结果里的第一箱水果。", 100)
+        setupMission(R.id.missionWechatLove, "打开微信，给备注为爸爸（或妈妈）的联系人，发一条信息：我爱你。", 50)
+        setupMission(R.id.missionWechatRich, "打开微信，搜索联系人“房产中介”，发送一条信息：这套房子我买了。", 200)
+        
+        dialog.show()
+    }
+    
+
 
     // --- 📜 RULES SYSTEM ---
     private fun showRulesDialog() {
@@ -819,11 +881,11 @@ class MainActivity : Activity(), LogCallback {
         
         val prefs = getSharedPreferences("AutoGLMConfig", android.content.Context.MODE_PRIVATE)
         val isHardcore = prefs.getBoolean("hardcore_mode", false)
-        val cost = if (isHardcore) 188 else 66
+        val cost = if (isHardcore) 1000 else 600
         
         // Update UI
         val currentCoins = getCoins()
-        tvBalance.text = "CREDITS: $currentCoins"
+        tvBalance.text = "$currentCoins 💰"
         btnPay.text = "UNBLOCK [ $cost ]"
         
         // --- Success Logic Function ---
@@ -847,7 +909,7 @@ class MainActivity : Activity(), LogCallback {
                 currentPrefs.edit().putInt("agent_coins", currentCoins + 100).apply()
                 
                 playSfx(sfxComplete)
-                Toast.makeText(this, "[ 得到牛爷爷 ] (CREDITS +100)", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "[ 得到牛爷爷 ] (+100 💰)", Toast.LENGTH_LONG).show()
                 
             } else {
                 currentPrefs.edit().putBoolean("permanent_unlock", true).apply()
@@ -858,7 +920,7 @@ class MainActivity : Activity(), LogCallback {
                 
                 playSfx(sfxComplete)
                 // Show Zheng Bang Toast
-                val toast = Toast.makeText(this, "[ 得到蒸蚌 ]\n(CREDITS +50)", Toast.LENGTH_LONG)
+                val toast = Toast.makeText(this, "[ 得到蒸蚌 ]\n(+50 💰)", Toast.LENGTH_LONG)
                 val view = toast.view
                 view?.setBackgroundColor(android.graphics.Color.parseColor("#FFD700"))
                 val text = view?.findViewById<TextView>(android.R.id.message)
@@ -1020,7 +1082,8 @@ class MainActivity : Activity(), LogCallback {
                 val py = Python.getInstance()
                 val module = py.getModule("agent_main")
                 
-                module.callAttr("run_task", apiKey, baseUrl, modelName, task, this, language)
+                val result = module.callAttr("run_task", apiKey, baseUrl, modelName, task, this, language)
+                val taskSucceeded = result?.toBoolean() ?: false
                 
                 runOnUiThread {
                     isTaskRunning = false
@@ -1028,7 +1091,7 @@ class MainActivity : Activity(), LogCallback {
                     updateStatus()
                     playSfx(sfxComplete)
                     
-                    // 💰 Reward Logic
+                    // 💰 Reward Logic (基础奖励：无论成功/中止都给)
                     val savedDoomsday = prefs.getStringSet("doomsday_list", null) ?: DEFAULT_PROTOCOLS.toSet()
                     var reward = 1
                     for (ddTask in savedDoomsday) {
@@ -1042,6 +1105,19 @@ class MainActivity : Activity(), LogCallback {
                         }
                     }
                     addCoins(reward)
+                    
+                    // Check for pending adventure reward (Impossible Mission bonus)
+                    // 🔥 ONLY give bonus if task finished successfully (AI said "finish")
+                    val pendingAdventureReward = prefs.getInt("pending_adventure_reward", 0)
+                    if (pendingAdventureReward > 0) {
+                        if (taskSucceeded) {
+                            addCoins(pendingAdventureReward)
+                            Toast.makeText(this, "不可能任务完成！+$pendingAdventureReward 💰", Toast.LENGTH_LONG).show()
+                        } else {
+                            Toast.makeText(this, "任务未完成，额外奖励取消", Toast.LENGTH_SHORT).show()
+                        }
+                        prefs.edit().remove("pending_adventure_reward").apply()
+                    }
                     
                     // --- 🎬 Trigger Puzzle Reveal ---
                     if (showPasswordReveal) {
@@ -1058,7 +1134,10 @@ class MainActivity : Activity(), LogCallback {
                     isTaskRunning = false
                     stopStarSignal()
                     updateStatus()
-                    playSfx(sfxAbort) 
+                    playSfx(sfxAbort)
+                    
+                    // Clear pending adventure reward on abort (anti-cheat)
+                    prefs.edit().remove("pending_adventure_reward").apply()
                 }
             }
         }.start()
@@ -1125,7 +1204,7 @@ class MainActivity : Activity(), LogCallback {
                 val coins = getCoins()
                 layoutList.visibility = View.GONE
                 layoutGrid.visibility = View.VISIBLE
-                tvTitle.text = "SIGI ASSET VAULT [ CREDITS: $coins ]"
+                tvTitle.text = "SIGI ASSET VAULT [ $coins 💰 ]"
                 btnCollection.text = "☰" // Icon to back to list
                 
                 // POPULATE GRID
@@ -1438,9 +1517,9 @@ class MainActivity : Activity(), LogCallback {
             }
             
             val message = if (isNew) {
-                "[ 延误补偿 ] 收到 $countryEmoji 道歉券 (NEW!)\nCREDITS +5"
+                "[ 延误补偿 ] 收到 $countryEmoji 道歉券 (NEW!)\n+5 💰"
             } else {
-                "[ 延误补偿 ] 收到 $countryEmoji 道歉券 (x$newCount)\nCREDITS +5"
+                "[ 延误补偿 ] 收到 $countryEmoji 道歉券 (x$newCount)\n+5 💰"
             }
 
             // 4. Adaptive Feedback

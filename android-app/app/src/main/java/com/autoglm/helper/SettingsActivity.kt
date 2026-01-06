@@ -261,6 +261,17 @@ class SettingsActivity : Activity() {
                  return false
              }
         })
+        // --- ▼ Settings Collapse Logic (Pure Visual Mode) ---
+        var isSettingsCollapsed = false
+        val btnSettingsCollapse = findViewById<android.widget.TextView>(R.id.btnSettingsCollapse)
+        val configViews = listOf(providerSpinner, editBaseUrl, editApiKey, editModelName, skinSpinner, sfxSpinner)
+        
+        btnSettingsCollapse.setOnClickListener {
+            isSettingsCollapsed = !isSettingsCollapsed
+            val visibility = if (isSettingsCollapsed) android.view.View.GONE else android.view.View.VISIBLE
+            configViews.forEach { it.visibility = visibility }
+            btnSettingsCollapse.text = if (isSettingsCollapsed) "▲" else "▼"
+        }
     } // End of onCreate
     
     private fun showRingLockDialog() {
@@ -507,7 +518,7 @@ class SettingsActivity : Activity() {
                 val coins = getCoins()
                 layoutList.visibility = android.view.View.GONE
                 layoutGrid.visibility = android.view.View.VISIBLE
-                tvTitle.text = "SIGI ASSET VAULT [ CREDITS: $coins ]"
+                tvTitle.text = "SIGI ASSET VAULT [ $coins 💰 ]"
                 btnCollection.text = "☰" // Icon to back to list
                 
                 // POPULATE GRID

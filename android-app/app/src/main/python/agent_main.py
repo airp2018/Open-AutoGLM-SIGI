@@ -215,7 +215,7 @@ class SimplePhoneAgent:
             log_callback.onLog("请确保:")
             log_callback.onLog("1. 已开启无障碍权限")
             log_callback.onLog("2. HTTP 服务器正在运行 (端口 8080)")
-            return
+            return False
         log_callback.onLog("[OK] 无障碍服务已就绪")
         
         # 重置停止标志
@@ -253,7 +253,7 @@ class SimplePhoneAgent:
             image = android_helper.take_screenshot()
             if image is None:
                 log_callback.onLog("\n[X] 无法获取截图")
-                break
+                return False
             
             # 记录截图大小
             log_callback.onLog(f"\n[IMG] 截图尺寸: {image.size}")
@@ -358,7 +358,7 @@ class SimplePhoneAgent:
                 if action[0] == 'finish':
                     message = action[1] if len(action) > 1 else "任务已完成"
                     log_callback.onLog(f"[OK] {message}")
-                    break
+                    return True  # 🎯 Task successfully finished
                 
                 elif action[0] == 'launch':
                     # 🔥 检查停止标志（避免干扰用户）
@@ -459,7 +459,10 @@ class SimplePhoneAgent:
                 log_callback.onLog(f"[ERR] 错误: {str(e)}")
                 import traceback
                 log_callback.onLog(traceback.format_exc())
-                break
+                return False
+        
+        # Loop ended without finish() - means stopped/aborted
+        return False
 
 
 # 全局 agent 实例（供 Kotlin 调用停止函数）
@@ -468,8 +471,9 @@ _current_agent = None
 def run_task(api_key, base_url, model_name, task, log_callback, language="Chinese"):
     global _current_agent
     _current_agent = SimplePhoneAgent(api_key, base_url, model_name, language)
-    _current_agent.run(task, log_callback)
+    result = _current_agent.run(task, log_callback)
     _current_agent = None  # 任务结束后清空
+    return result  # Return True if finished, False if aborted
 
 def stop_gracefully(buffer_steps=1):
     """
