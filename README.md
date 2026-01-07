@@ -105,7 +105,7 @@ SIGI 的灵感源自 **《三体》 (The Three-Body Problem)** 与 **古典赛�
 
 ### 04. 架构改造
 
-我们对开源的 Open-AutoGLM 进行了 **降维打击** 级别的重构。
+我们对开源的 Open-AutoGLM 进行了 **局部重构**。
 
 *   **Old Way (竞品)**: 需要安装 Termux + 配置 Python 环境 + 复杂的双进程通信。手机发烫、卡顿、容易崩溃。
 *   **SIGI Way (本方案)**: **单进程混合架构 (Single-Process Hybrid)**。Python 智能体直接植入 Android 核心。
