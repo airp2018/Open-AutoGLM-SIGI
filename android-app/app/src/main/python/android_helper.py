@@ -9,44 +9,83 @@ HELPER_URL = "http://localhost:8080"
 LAST_CLICK_POS = (None, None)  # 记录上一次点击的位置，用于夺回焦点
 
 # APP 包名映射
+# APP 包名映射
 APP_PACKAGES = {
-    # 购物
+    # 购物/外卖
     "淘宝": "com.taobao.taobao",
+    "淘宝闪购": "com.taobao.taobao", # 淘宝内功能
     "京东": "com.jingdong.app.mall",
+    "京东秒送": "com.jingdong.pdj", # 京东到家
     "闲鱼": "com.taobao.idlefish",
     "拼多多": "com.xunmeng.pinduoduo",
-    
-    # 社交/通讯
+    "美团": "com.sankuai.meituan",
+    "饿了么": "me.ele",
+    "肯德基": "com.yum.kfc.brand",
+    "大众点评": "com.dianping.v1",
+
+    # 社交/通讯/办公
     "微信": "com.tencent.mm",
     "QQ": "com.tencent.mobileqq",
+    "QQ邮箱": "com.tencent.androidqqmail",
     "微博": "com.sina.weibo",
     "小红书": "com.xingin.xhs",
     "知乎": "com.zhihu.android",
-    
-    # 视频/娱乐
+    "豆瓣": "com.douban.frodo",
+    "飞书": "com.ss.android.lark",
+    "豆包": "com.larus.nova",
+
+    # 视频/直播/短剧
     "抖音": "com.ss.android.ugc.aweme",
+    "快手": "com.smile.gifmaker",
     "B站": "tv.danmaku.bili",
-    
-    # 音乐
+    "哔哩哔哩": "tv.danmaku.bili",
+    "优酷视频": "com.youku.phone",
+    "爱奇艺": "com.qiyi.video",
+    "腾讯视频": "com.tencent.qqlive",
+    "芒果TV": "com.hunantv.imgo.activity",
+    "红果短剧": "com.xs.fm",
+
+    # 音乐/音频
     "网易云音乐": "com.netease.cloudmusic",
     "QQ音乐": "com.tencent.qqmusic",
-    
-    # 生活/出行
-    "美团": "com.sankuai.meituan",
-    "大众点评": "com.dianping.v1",
-    "12306": "com.MobileTicket",
+    "汽水音乐": "com.luna.music",
+    "喜马拉雅": "com.ximalaya.ting.android",
+
+    # 出行/旅游/地图
     "高德地图": "com.autonavi.minimap",
     "百度地图": "com.baidu.BaiduMap",
     "滴滴出行": "com.sdu.didi.psnger",
     "携程": "ctrip.android.view",
+    "携程旅行": "ctrip.android.view",
     "去哪儿": "com.Qunar",
-    
-    # 支付/金融
-    "支付宝": "com.eg.android.AlipayGphone",
-    "招商银行": "cmb.pb",
-    
-    # 工具/阅读/浏览器
+    "去哪儿旅行": "com.Qunar",
+    "12306": "com.MobileTicket",
+    "铁路12306": "com.MobileTicket",
+
+    # 阅读/资讯
+    "今日头条": "com.ss.android.article.news",
+    "腾讯新闻": "com.tencent.news",
+    "七猫免费小说": "com.kmxs.reader",
+    "番茄小说": "com.dragon.read",
+    "番茄免费小说": "com.dragon.read",
     "微信读书": "com.tencent.weread",
+    
+    # 金融/房产
+    "支付宝": "com.eg.android.AlipayGphone",
+    "同花顺": "com.hexin.plat.android",
+    "招商银行": "cmb.pb",
+    "贝壳找房": "com.lianjia.beike",
+    "安居客": "com.anjuke.android.app",
+
+    # 运动/健康/女性
+    "Keep": "com.gotokeep.keep",
+    "美柚": "com.seeyouyima.xch",
+
+    # 游戏
+    "崩坏：星穹铁道": "com.miHoYo.hkrpg",
+    "恋与深空": "com.papegames.lysk.cn",
+
+    # 工具/浏览器
     "有道词典": "com.youdao.dict",
     "百度网盘": "com.baidu.netdisk",
     "夸克": "com.quark.browser",

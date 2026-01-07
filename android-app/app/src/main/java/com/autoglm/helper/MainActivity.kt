@@ -233,7 +233,7 @@ class MainActivity : Activity(), LogCallback {
             playSfx(sfxClick)
             showAgentAdventureDialog()
         }
-
+        
         // --- 🪐 Cyber Market Logic ---
         val btnCyberMarket = findViewById<TextView>(R.id.btnCyberMarket)
         btnCyberMarket.setOnClickListener {
@@ -415,9 +415,9 @@ class MainActivity : Activity(), LogCallback {
         "忍冬将至，打开美团，去附近的肯德基，买2份香辣鸡翅",
         "打开12306，查询明天北京去上海的高铁票，还有木有呀",
         "打开淘宝，查看她妈的已购商品里的西洋参，该补补了",
-        "打开微信，给微信里的好友XXX，发一条：卿本家人，我负卿卿",
         "打开网易云音乐，搜索：末日狂奔（黄子弘凡）",
-        "打开携程，北京百子湾附近，低于300的快捷酒店，我不想死家里呀"
+        "打开携程，北京百子湾附近，低于300的快捷酒店，我不想死家里呀",
+        "打开豆瓣，搜索书籍《集异壁》，找到后点击查看评分详情"
     )
     
     private fun showDoomsdayListDialog() {
@@ -498,12 +498,54 @@ class MainActivity : Activity(), LogCallback {
             listContainer.addView(rowLayout)
             
              // Divider
-            val divider = View(this)
+            val divider = android.view.View(this)
             divider.layoutParams = android.widget.LinearLayout.LayoutParams(
                 android.widget.LinearLayout.LayoutParams.MATCH_PARENT, 1
             )
             divider.setBackgroundColor(android.graphics.Color.parseColor("#3300E676"))
             listContainer.addView(divider)
+        }
+        
+        // --- 🕵️ HIDDEN PROTOCOL: 1379 (Ultimate Unlock) ---
+        val hasEasy = prefs.getBoolean("permanent_unlock", false)
+        val hasHard = prefs.getBoolean("permanent_unlock_hard", false)
+        
+        if (hasEasy && hasHard) {
+            val hiddenProtocol = "【 1379 】(NEW)：打开微信，点击搜索图标，输入“1379是哪部科幻小说的密码”，并发送"
+            
+            val rowLayout = android.widget.LinearLayout(this)
+            rowLayout.orientation = android.widget.LinearLayout.HORIZONTAL
+            rowLayout.setPadding(0, 24, 0, 24) // Extra padding for emphasis
+            
+            val tv = TextView(this)
+            tv.text = "> $hiddenProtocol"
+            tv.setTextColor(android.graphics.Color.parseColor("#FF5252")) // RED for danger/special
+            tv.textSize = 14f
+            tv.typeface = typeFace
+            tv.letterSpacing = 0.05f
+            
+            val tvReward = TextView(this)
+            tvReward.text = "♾️" // Infinity symbol
+            tvReward.setTextColor(android.graphics.Color.RED)
+            tvReward.textSize = 14f
+            tvReward.typeface = typeFace
+            
+            tv.layoutParams = android.widget.LinearLayout.LayoutParams(0, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+            rowLayout.addView(tv)
+            rowLayout.addView(tvReward)
+            
+            rowLayout.setOnClickListener {
+                taskInput.setText(hiddenProtocol)
+                taskInput.setSelection(taskInput.text.length)
+                dialog.dismiss()
+            }
+            
+            // Special Glitch Effect Background
+            val outValue = android.util.TypedValue()
+            theme.resolveAttribute(android.R.attr.selectableItemBackground, outValue, true)
+            rowLayout.setBackgroundResource(outValue.resourceId)
+            
+            listContainer.addView(rowLayout)
         }
         
         btnClose.setOnClickListener { dialog.dismiss() }
@@ -551,60 +593,6 @@ class MainActivity : Activity(), LogCallback {
     }
     
 
-
-    // --- 🪐 CYBER MARKET SYSTEM ---
-    data class MarketItem(
-        val id: String,
-        val icon: String,
-        val title: String, 
-        val desc: String, 
-        val seller: String, 
-        val contact: String,
-        val price: Int,
-        val type: String // "PROMPT", "CONTRACT", "DATA"
-    )
-
-    private fun showCyberMarketDialog() {
-        val dialog = android.app.Dialog(this)
-        dialog.setContentView(R.layout.dialog_cyber_market)
-        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-        
-        // 1. Initialize Balance Display
-        val tvBalance = dialog.findViewById<TextView>(R.id.marketUserBalance)
-        tvBalance.text = "BAL: ${getCoins()}"
-
-        // UI Elements
-        val detailOverlay = dialog.findViewById<android.view.View>(R.id.detailOverlay)
-        val btnBack = dialog.findViewById<Button>(R.id.btnRentAction)
-        
-        // 2. Click Logic for ALL Nodes (Unified "For Rent" Logic)
-        val signalNodes = listOf(
-            R.id.signalNode1, R.id.signalNode2, R.id.signalNode3,
-            R.id.signalNode4, R.id.signalNode5, R.id.signalNode6
-        )
-        
-        for (nodeId in signalNodes) {
-             dialog.findViewById<android.view.View>(nodeId).setOnClickListener {
-                 playSfx(sfxClick)
-                 // Show "For Rent" Overlay
-                 detailOverlay.visibility = android.view.View.VISIBLE
-             }
-        }
-        
-        // Back Button in Overlay
-        btnBack.setOnClickListener {
-            playSfx(sfxAbort)
-            detailOverlay.visibility = android.view.View.GONE
-        }
-
-        // Close Dialog Logic
-        dialog.findViewById<android.view.View>(R.id.btnCloseMarket).setOnClickListener {
-            playSfx(sfxClick)
-            dialog.dismiss()
-        }
-        
-        dialog.show()
-    }
 
     // --- 📜 RULES SYSTEM ---
     private fun showRulesDialog() {
@@ -1180,6 +1168,21 @@ class MainActivity : Activity(), LogCallback {
                         prefs.edit().remove("pending_adventure_reward").apply()
                     }
                     
+                    // --- 🥚 EASTER EGG: PROPHET NOTE (GEB) ---
+                    if (taskSucceeded && task.contains("集异壁")) {
+                         // Persist Unlock
+                         prefs.edit().putBoolean("prophet_note_unlocked", true).apply()
+                         runOnUiThread {
+                             handler.postDelayed({ showProphetNoteDialog() }, 500)
+                         }
+                    }
+                    
+                    // --- 🥚 EASTER EGG: 1379 (Infinity Loop) ---
+                    if (taskSucceeded && task.contains("1379")) {
+                        addCoins(10)
+                        Toast.makeText(this, "⚠️ 这是一个无限的循环。\n(+10 💰)", Toast.LENGTH_LONG).show()
+                    }
+
                     // --- 🎬 Trigger Puzzle Reveal ---
                     if (showPasswordReveal) {
                         handler.postDelayed({
@@ -1635,5 +1638,105 @@ class MainActivity : Activity(), LogCallback {
             
             playSfx(sfxComplete)
         }
+    }
+
+    // --- 🪐 CYBER MARKET DIALOG ---
+    private fun showCyberMarketDialog() {
+        val dialog = android.app.Dialog(this)
+        dialog.setContentView(R.layout.dialog_cyber_market)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        
+        // Bind Views (Match correct IDs from XML now!)
+        val tvBalance = dialog.findViewById<TextView>(R.id.marketUserBalance) // Fixed ID
+        val btnClose = dialog.findViewById<android.view.View>(R.id.btnCloseMarket)
+        val detailOverlay = dialog.findViewById<android.view.View>(R.id.detailOverlay)
+        // No dynamic title/desc needed, XML has static text for "For Rent"
+        val btnCloseDetail = dialog.findViewById<android.view.View>(R.id.btnRentAction) // Fixed ID
+        
+        // Update Balance
+        tvBalance.text = "BAL: ${getCoins()}"
+        
+        // Signal Grid Click Listeners (All show "For Rent")
+        val signalIds = listOf(
+            R.id.signalNode1, R.id.signalNode2, R.id.signalNode3,
+            R.id.signalNode4, R.id.signalNode5, R.id.signalNode6
+        )
+        
+        for (id in signalIds) {
+            dialog.findViewById<android.view.View>(id)?.setOnClickListener {
+                // Show "For Rent" Overlay
+                detailOverlay.visibility = android.view.View.VISIBLE
+            }
+        }
+        
+        // Close Detail Overlay
+        btnCloseDetail.setOnClickListener {
+            detailOverlay.visibility = android.view.View.GONE
+        }
+        
+        // Close Dialog
+        btnClose.setOnClickListener {
+            dialog.dismiss()
+        }
+        
+        dialog.show()
+    }
+
+    // --- 📜 PROPHET NOTE DIALOG (Cyber Terminal Style) ---
+    private fun showProphetNoteDialog() {
+        val dialog = android.app.Dialog(this)
+        
+        // Dynamically create the view
+        val container = android.widget.FrameLayout(this)
+        container.setBackgroundColor(android.graphics.Color.parseColor("#CC000000")) // Semi-transparent black
+        container.isClickable = true
+        container.isFocusable = true
+        
+        // The "Note" card
+        val noteCard = android.widget.LinearLayout(this)
+        noteCard.orientation = android.widget.LinearLayout.VERTICAL
+        noteCard.setBackgroundColor(android.graphics.Color.parseColor("#1A1A1A")) // Dark grey
+        noteCard.setPadding(48, 48, 48, 48)
+        
+        // Green Border Effect (via a wrapper)
+        val borderWrapper = android.widget.FrameLayout(this)
+        borderWrapper.setBackgroundColor(android.graphics.Color.parseColor("#00E676")) // Neon Green Border
+        borderWrapper.setPadding(4, 4, 4, 4) // Border width
+        
+        // Text Content
+        val tvNote = TextView(this)
+        tvNote.text = "【 先知便签 】\n\n> 怪圈概念中所隐含的是无穷概念，循环就是一种以有穷的方式表示无休止过程的方法。"
+        tvNote.textSize = 14f
+        tvNote.setTextColor(android.graphics.Color.parseColor("#00E676")) // Neon Green
+        tvNote.typeface = android.graphics.Typeface.MONOSPACE
+        tvNote.setLineSpacing(0f, 1.6f)
+        noteCard.addView(tvNote)
+        
+        // Assemble
+        borderWrapper.addView(noteCard)
+        
+        val cardParams = android.widget.FrameLayout.LayoutParams(
+            android.widget.FrameLayout.LayoutParams.WRAP_CONTENT,
+            android.widget.FrameLayout.LayoutParams.WRAP_CONTENT
+        )
+        cardParams.gravity = android.view.Gravity.CENTER
+        // Max Width to prevent full screen stretch
+        cardParams.setMargins(64, 64, 64, 64)
+        borderWrapper.layoutParams = cardParams
+        
+        container.addView(borderWrapper)
+        
+        dialog.setContentView(container)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.window?.setLayout(
+            android.view.ViewGroup.LayoutParams.MATCH_PARENT, 
+            android.view.ViewGroup.LayoutParams.MATCH_PARENT
+        )
+        
+        container.setOnClickListener { dialog.dismiss() }
+        dialog.setCanceledOnTouchOutside(true)
+        dialog.show()
+        
+        playSfx(sfxComplete)
     }
 }

@@ -578,6 +578,14 @@ class SettingsActivity : Activity() {
             artifacts.add(Artifact("zheng_bang_coin", "蒸蚌", R.drawable.asset_banknote_cat))
         }
 
+
+
+        // 3.5 Prophet Note (GEB)
+        if (prefs.getBoolean("prophet_note_unlocked", false)) {
+            // Using a generic icon for now, or text icon
+            artifacts.add(Artifact("prophet_note", "先知便签", android.R.drawable.ic_menu_sort_by_size)) 
+        }
+
         // 4. Apology Stamps (The Alliance)
         val apologyStamps = mapOf(
             "JP" to R.drawable.stamp_apology_jp,
@@ -683,6 +691,56 @@ class SettingsActivity : Activity() {
             img.setImageResource(artifact.iconRes)
             overlayContainer.visibility = android.view.View.GONE
             
+            img.setImageResource(artifact.iconRes)
+            overlayContainer.visibility = android.view.View.GONE
+            
+        } else if (artifact.id == "prophet_note") {
+             // PROPHET NOTE DISPLAY (Cyber Terminal Style - Programmatic)
+             val container = android.widget.FrameLayout(this)
+             container.setBackgroundColor(android.graphics.Color.parseColor("#CC000000"))
+             container.isClickable = true
+             container.isFocusable = true
+             
+             val noteCard = android.widget.LinearLayout(this)
+             noteCard.orientation = android.widget.LinearLayout.VERTICAL
+             noteCard.setBackgroundColor(android.graphics.Color.parseColor("#1A1A1A"))
+             noteCard.setPadding(48, 48, 48, 48)
+             
+             val borderWrapper = android.widget.FrameLayout(this)
+             borderWrapper.setBackgroundColor(android.graphics.Color.parseColor("#00E676"))
+             borderWrapper.setPadding(4, 4, 4, 4)
+             
+             val tvNote = android.widget.TextView(this)
+             tvNote.text = "【 先知便签 】\n\n> 怪圈概念中所隐含的是无穷概念，循环就是一种以有穷的方式表示无休止过程的方法。"
+             tvNote.textSize = 14f
+             tvNote.setTextColor(android.graphics.Color.parseColor("#00E676"))
+             tvNote.typeface = android.graphics.Typeface.MONOSPACE
+             tvNote.setLineSpacing(0f, 1.6f)
+             noteCard.addView(tvNote)
+             
+             borderWrapper.addView(noteCard)
+             
+             val cardParams = android.widget.FrameLayout.LayoutParams(
+                 android.widget.FrameLayout.LayoutParams.WRAP_CONTENT,
+                 android.widget.FrameLayout.LayoutParams.WRAP_CONTENT
+             )
+             cardParams.gravity = android.view.Gravity.CENTER
+             cardParams.setMargins(64, 64, 64, 64)
+             borderWrapper.layoutParams = cardParams
+             
+             container.addView(borderWrapper)
+             container.setOnClickListener { dialog.dismiss() }
+             
+             dialog.setContentView(container)
+             dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+             dialog.window?.setLayout(
+                 android.view.ViewGroup.LayoutParams.MATCH_PARENT, 
+                 android.view.ViewGroup.LayoutParams.MATCH_PARENT
+             )
+             dialog.setCanceledOnTouchOutside(true)
+             dialog.show()
+             return // Already shown, skip common logic
+
         } else {
             // Fallback generic
              return
