@@ -134,7 +134,7 @@ Open-AutoGLM-SIGI/
 ```
 
 #### 混合架构原理
-SIGI 采用独创的 **单进程混合架构 (Single-Process Hybrid)**，通过 Chaquopy 将 Python 虚拟机嵌入 Android Runtime。
+SIGI 采用 **单进程混合架构 (Single-Process Hybrid)**，通过 Chaquopy 将 Python 虚拟机嵌入 Android Runtime。
 1.  **大脑 (Brain)**: Python 层运行 AutoGLM Agent，处理 LLM 推理与任务规划。
 2.  **手眼 (Hand & Eye)**: Android 原生层负责截图 (`MediaProjection`) 和模拟操作 (`AccessibilityService`)。
 3.  **神经 (Nerve)**: 两者通过内存级 JNI 通信，**零延迟**传输指令与数据，彻底告别了传统 HTTP/Socket 通信的卡顿。
