@@ -9,6 +9,8 @@
 
 # AutoGLM-SIGI: The Last Cyberphone
 
+> ⭐ **If you find this project interesting, please give it a star ⭐**
+
 ## 🌟 SIGI v3.2: "The Apology Alliance"
 
 > **"Delay compensation makes AI feel more human, like a hardworking delivery rider, rather than just a tool."**
@@ -143,6 +145,8 @@ I am not a traditional "coder"; I am a **Storyteller** and **Creative Strategist
 *   **Crossover**: Provided creative strategy support for top brands like **BMW, HP, Chrysler, LV, and Burberry**.
 
 > **"In the AI era, technology is no longer a barrier. Creative minds, empowered by Vibe Coding, will transform fresh ideas into tangible products. We light up your product with creative details."**
+
+> 💡 **SIGI is independently developed by a single creator — covering full-stack development, narrative design, game mechanics, and product design. This is not a patchwork of team collaboration, but a unified expression of a complete creative vision.** From code to copy, from UI to world-building, every detail comes from the same mind — a rarity in the AI Agent space.
 
 ### 07. Install & Join
 
