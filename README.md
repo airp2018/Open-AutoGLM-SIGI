@@ -152,6 +152,8 @@ SIGI 采用 **单进程混合架构 (Single-Process Hybrid)**，通过 Chaquopy 
 
 > **"AI 时代，技术不再是壁垒。创意人员凭借 Vibe Coding，将把更新鲜的创意与想法，转化为具体有形的产品，我们用创意细节点亮你的产品。"**
 
+> 💡 **SIGI 由单一创作者独立完成全栈开发、叙事设计、游戏机制与产品设计——这不是分工协作的拼凑，而是一个完整创意愿景的统一表达。** 从代码到文案，从 UI 到世界观，每一个细节都出自同一个大脑，这在 AI Agent 领域极为稀缺。
+
 ### 07. 安装与加入
 
 1.  在 **[Releases](https://github.com/airp2018/Open-AutoGLM-SIGI/releases)** 下载 **SIGI_Deployment_Kit.zip** (一键安装包)。
