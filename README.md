@@ -9,6 +9,8 @@
 
 # AutoGLM-SIGI: 最后的赛博终端 (The Last Cyberphone)
 
+> ⭐ **路过的朋友，不吝点上一颗星 ⭐**
+
 ## 🌟 SIGI v3.4: "Cyber Market & Symbolism" (赛博交易所)
 
 > **"这里是赛博宇宙的尽头。我们是很黑，你能怎么嘛。"**
