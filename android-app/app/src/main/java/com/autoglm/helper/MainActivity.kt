@@ -181,7 +181,7 @@ class MainActivity : Activity(), LogCallback {
                 
                 // 设置软着陆（1步后强制停止）
                 val agentModule = py.getModule("agent_main")
-                val result = agentModule.callAttr("stop_gracefully", 1).toInt()
+                val result = agentModule.callAttr("stop_gracefully", 0).toInt()
                 
                 if (result > 0) {
                     onLog("✅ 已设置停止点：第 $result 步")
