@@ -61,8 +61,8 @@ class SimplePhoneAgent:
         openai.api_key = api_key
         openai.api_base = base_url
         
-        # 🔥 使用用户配置的 API 地址
-        self.model_name = "autoglm-phone"
+        # 🔥 使用用户配置的 API 模型与地址
+        self.model_name = model_name if model_name else "autoglm-phone"
         self.url = self.base_url
         self.max_steps = 40  # 原始最大步数
         self.dynamic_max_steps = 40  # 动态最大步数（可被停止按钮修改）
@@ -301,12 +301,26 @@ class SimplePhoneAgent:
                 
                 log_callback.onLog(f"[API] 调用: {self.model_name}")
                 
-                response = openai.ChatCompletion.create(
-                    model=self.model_name,
-                    messages=messages_to_send,
-                    max_tokens=300,
-                    temperature=0.1
-                )
+                # 带 429 智能重试机制的调用逻辑
+                max_retries = 3
+                response = None
+                for attempt in range(max_retries):
+                    try:
+                        response = openai.ChatCompletion.create(
+                            model=self.model_name,
+                            messages=messages_to_send,
+                            max_tokens=300,
+                            temperature=0.1
+                        )
+                        break
+                    except Exception as api_err:
+                        err_str = str(api_err)
+                        if "429" in err_str or "RATE_LIMIT" in err_str:
+                            if attempt < max_retries - 1:
+                                log_callback.onLog(f"[!] 触发每分钟频率限制 (429)，等待 12 秒后自动重试 ({attempt + 1}/{max_retries})...")
+                                time.sleep(12)
+                                continue
+                        raise api_err
                 
                 content = response['choices'][0]['message']['content']
                 log_callback.onLog(f"[<] AI 回复:\n{content[:200]}...\n")

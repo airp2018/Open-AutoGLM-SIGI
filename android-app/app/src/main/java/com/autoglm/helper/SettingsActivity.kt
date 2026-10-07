@@ -29,9 +29,9 @@ class SettingsActivity : Activity() {
     private val ZHIPU_KEY = ""
     private val ZHIPU_MODEL = "autoglm-phone"
 
-    private val MS_URL = "https://api-inference.modelscope.cn/v1"
-    private val MS_KEY = ""
-    private val MS_MODEL = "ZhipuAI/AutoGLM-Phone-9B"
+    private val PPIO_URL = "https://api.ppio.com/openai/v1"
+    private val PPIO_KEY = "sk_LsXVN9-rzZp4DvtUBXKXXXtjFPXCJ3DlLZlqNS7tPm0"
+    private val PPIO_MODEL = "zai-org/autoglm-phone-9b-multilingual"
     
     // private var isInitialLoad = true // Removed strict binding check requirement
 
@@ -63,21 +63,26 @@ class SettingsActivity : Activity() {
         }
 
         // Radio Button Toggle Logic
-        // Initialize Spinner Adapter
-        // Initialize Spinner Adapter (Simplified: Only ZhipuAI)
-        val providers = arrayOf("ZhipuAI (Official)")
+        // Initialize Spinner Adapter (PPIO & ZhipuAI)
+        val providers = arrayOf("PPIO (派欧云 - 推荐)", "ZhipuAI (智谱官方)")
         val adapter = android.widget.ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, providers)
         providerSpinner.adapter = adapter
         
          // Handle User Interaction (Spinner Selection)
          providerSpinner.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
               override fun onItemSelected(parent: android.widget.AdapterView<*>, view: android.view.View?, position: Int, id: Long) {
-                  // Only one provider, so always Zhipu logic
-                  editBaseUrl.setText(ZHIPU_URL)
-                  editModelName.setText(ZHIPU_MODEL)
-                  // Smart Preserve: Don't wipe user's key
-                  if (ZHIPU_KEY.isNotEmpty() || editApiKey.text.toString().isEmpty()) {
-                      editApiKey.setText(ZHIPU_KEY)
+                  if (position == 0) {
+                      editBaseUrl.setText(PPIO_URL)
+                      editModelName.setText(PPIO_MODEL)
+                      if (PPIO_KEY.isNotEmpty() && editApiKey.text.toString().isEmpty()) {
+                          editApiKey.setText(PPIO_KEY)
+                      }
+                  } else {
+                      editBaseUrl.setText(ZHIPU_URL)
+                      editModelName.setText(ZHIPU_MODEL)
+                      if (ZHIPU_KEY.isNotEmpty() && editApiKey.text.toString().isEmpty()) {
+                          editApiKey.setText(ZHIPU_KEY)
+                      }
                   }
               }
  
@@ -465,13 +470,10 @@ class SettingsActivity : Activity() {
         
         // Determine which provider matches the saved settings purely by URL/Key check
         // Or default to ZhipuAI
-        if (savedUrl?.contains("modelscope") == true || savedKey?.startsWith("ms-") == true) {
-            // Check if actual selection is needed to avoid redundant firing if possible, 
-            // but for simplicity we set it. The listener will fire and reset values to "Perfect Constants".
-            // If user had slightly custom values, they will be reset. This aligns with "Strict Binding".
-            providerSpinner.setSelection(1) // ModelScope
+        if (savedUrl?.contains("ppio") == true || savedKey?.startsWith("sk_") == true) {
+            providerSpinner.setSelection(0) // PPIO
         } else {
-            providerSpinner.setSelection(0) // ZhipuAI
+            providerSpinner.setSelection(1) // ZhipuAI
         }
     }
 
